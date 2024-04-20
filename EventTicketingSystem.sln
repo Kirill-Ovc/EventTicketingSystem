@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33502.350
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingSystem", "EventTicketingSystem\EventTicketingSystem.csproj", "{30D78993-42F5-498E-9A75-F9FC953EA3F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingSystem.ConsoleTest", "EventTicketingSystem.ConsoleTest\EventTicketingSystem.ConsoleTest.csproj", "{DF851FA6-004E-4052-ADA9-B95CE94D788B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingSystem.DataAccess", "EventTicketingSystem.DataAccess\EventTicketingSystem.DataAccess.csproj", "{E863F713-3240-4CA1-AEAB-11727BDC02B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30D78993-42F5-498E-9A75-F9FC953EA3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30D78993-42F5-498E-9A75-F9FC953EA3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30D78993-42F5-498E-9A75-F9FC953EA3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30D78993-42F5-498E-9A75-F9FC953EA3F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF851FA6-004E-4052-ADA9-B95CE94D788B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF851FA6-004E-4052-ADA9-B95CE94D788B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF851FA6-004E-4052-ADA9-B95CE94D788B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF851FA6-004E-4052-ADA9-B95CE94D788B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E863F713-3240-4CA1-AEAB-11727BDC02B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E863F713-3240-4CA1-AEAB-11727BDC02B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E863F713-3240-4CA1-AEAB-11727BDC02B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E863F713-3240-4CA1-AEAB-11727BDC02B4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A64D4761-EC47-469B-B049-15030C17EA67}
+	EndGlobalSection
+EndGlobal
