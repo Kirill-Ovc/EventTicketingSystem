@@ -1,0 +1,82 @@
+Task 1
+ Draw a high-level system's components diagram (UI, Backend, Services, etc.)
+Task 2
+ Draw a state machine diagram for a seat state (available, booked, sold)
+Task 3
+ Draw a sequence diagram for buying a seat of a lowest price (includes finding available seats logic)
+
+Task 2 
+https://plantuml-editor.kkeisuke.com/
+
+@startuml
+
+title State machine diagram for a 'seat state'
+
+state "Available" as available 
+state "Booked" as booked
+state "Sold" as sold
+
+[*] --> available
+available --> booked : Add seat in cart
+booked --> available : Delete seat from cart \n/ Claim time expired
+booked --> sold : Payment completed
+sold --> available : Ticket cancelled
+
+@enduml
+
+
+
+
+Task 3
+
+@startuml
+title Sequence diagram for buying a seat of a lowest price
+
+actor Customer
+participant "Event System" as Event
+participant "Seat System" as Seat
+participant "Booking System" as Booking
+participant "Payment System" as Payment
+participant "Notification System" as Notification
+
+Customer -> Event : Select City
+Event --> Customer : Display Events
+Customer -> Event : Select Event
+
+Event -> Seat : Request Seats Map
+activate Seat
+Seat --> Event : Return Seats Map with Sections
+deactivate Seat
+
+Event --> Customer : Display Seats Map with Sections
+
+Customer -> Seat : Select Section with lowest price
+activate Seat
+Seat --> Customer : Display Available Seats and prices
+deactivate Seat
+Customer -> Seat : Select Seat
+Seat --> Customer : Request Authorization
+
+Customer -> Booking : Login
+Customer -> Seat : Select Seat
+Customer -> Booking : Add Seat to Cart
+Booking -> Seat : Check seat availability
+Seat --> Booking : Seat booked
+Booking --> Customer : Update Cart
+
+Customer -> Booking : Checkout Cart
+Booking -> Payment : Make payment
+activate Payment
+Payment --> Customer : Request Card Details
+Customer --> Payment : Provide Card Details
+Payment --> Booking : Payment Completed
+deactivate Payment
+Booking -> Seat : Create Ticket
+Seat --> Booking : Ticket Created
+Booking -> Customer : Display Ticket
+Booking -> Notification : Create Notification Email
+activate Notification
+Notification -> Customer : Send Notification Email
+deactivate Notification
+
+@enduml

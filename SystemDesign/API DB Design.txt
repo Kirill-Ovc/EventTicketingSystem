@@ -1,0 +1,39 @@
+
+=== API Design === 
+
+- Event Service
+getCities()
+getVenues(cityId)
+getEvents(cityId)
+getEvents(venueId)
+createEvent(eventData)
+
+- Booking Service
+bookSeats(eventId, seatsIds): bookingToken 
+purchaseSeats(bookingToken): tickets
+getTickets(userId)
+getBookings(userId)
+
+- Seat Service
+getSections(eventId)
+getSeats(eventId, sectionId)
+
+=== Database Design === 
+
+Users(id, userName, password, name, email, phone, dateOfBirth, created, location, photoUrl)
+Cities(id, name, description, country, photoUrl)
+Venues(id, name, cityId, address, information, photoUrl, seatMapUrl)
+Events(id, name, time, venueId, eventInfoId)
+EventInfo(id, name, information, posterUrl)
+
+Manifests:
+Sections(id, venueId, name, positionX, positionY, size, color)
+Seats(id, venueId, name, sectionId, rowNumber, positionX, positionY, type)
+
+EventSeats(id, eventId, seatId, name, status)
+Offers(id, eventId, sectionId, rowNumber, ticketLevel, price)
+
+Bookings(Id, eventseatId, userId, status, price, token, expirationTimeStamp)
+Tickets(Id, eventseatId, userId, timeStamp, status, ticketLevel, price)
+
+
