@@ -9,5 +9,6 @@
         public int PositionY { get; set; }
         public int Size { get; set; }
         public string Color { get; set; }
+        public int Capacity { get; set; }
     }
 }

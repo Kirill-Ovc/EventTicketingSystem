@@ -10,7 +10,7 @@
         public string Phone { get; set; }
         public string Location { get; set; }
         public string PhotoUrl { get; set; }
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 }
