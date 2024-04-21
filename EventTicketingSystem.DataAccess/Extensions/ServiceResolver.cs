@@ -1,6 +1,7 @@
 ﻿using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Context;
 using EventTicketingSystem.DataAccess.Models.Settings;
+using EventTicketingSystem.DataAccess.Seed;
 using EventTicketingSystem.DataAccess.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,9 @@ namespace EventTicketingSystem.DataAccess.Extensions
         {
             services.RegisterContext(configuration);
             services.RegisterRepositories();
+
+            services.AddScoped<ISeedService, SeedService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         private static void RegisterContext(this IServiceCollection services, IConfiguration configuration)
@@ -42,6 +46,12 @@ namespace EventTicketingSystem.DataAccess.Extensions
         private static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<IEventInfoRepository, EventInfoRepository>();
+            services.AddScoped<ISeatRepository, SeatRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
         }
     }
 }

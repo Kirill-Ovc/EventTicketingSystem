@@ -21,10 +21,17 @@ namespace EventTicketingSystem.ConsoleTest
             services.AddDataAccess(config);
         }
 
-        public static IUserRepository GetRepository()
+        public static IUserRepository GetUserRepository()
         {
             var service = _serviceProvider.GetService<IUserRepository>();
             return service;
         }
+
+        public static ISeedService GetSeedService()
+        {
+            var service = _serviceProvider.GetService<ISeedService>();
+            return service;
+        }
+
     }
 }

@@ -9,5 +9,8 @@ namespace EventTicketingSystem.DataAccess.Models.Entities
         public int SeatId { get; set; }
         public string Name { get; set; }
         public EventSeatStatus Status { get; set; }
+
+        public virtual Event Event { get; set; }
+        public virtual Seat Seat { get; set; }
     }
 }

@@ -4,6 +4,12 @@ namespace EventTicketingSystem.DataAccess.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<ICollection<User>> GetUsers();
+        Task<ICollection<User>> GetUsers();
+        Task<User> GetUserById(int id);
+        Task<User> GetUserByUsername(string username);
+        Task Add(User user);
+        void Update(User user);
+        Task Delete(int id);
+        Task SaveChanges();
     }
 }

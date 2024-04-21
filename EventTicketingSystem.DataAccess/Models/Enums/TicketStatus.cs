@@ -1,6 +1,6 @@
 ﻿namespace EventTicketingSystem.DataAccess.Models.Enums
 {
-    internal enum TicketStatus
+    public enum TicketStatus
     {
         Active = 0
     }

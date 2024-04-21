@@ -1,10 +1,13 @@
 ﻿namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    internal class EventInfo
+    public class EventInfo
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Information { get; set; }
+        public string Type { get; set; }
         public string PosterUrl { get; set; }
+
+        public ICollection<Event> EventOccurrences { get; set; }
     }
 }

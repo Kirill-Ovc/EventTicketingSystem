@@ -11,5 +11,7 @@ namespace EventTicketingSystem.DataAccess.Models.Entities
         public TicketStatus Status { get; set; }
         public TicketLevel TicketLevel { get; set; }
         public decimal Price { get; set; }
+
+        public virtual EventSeat EventSeat { get; set; }
     }
 }
