@@ -29,7 +29,6 @@ namespace EventTicketingSystem.DataAccess.Models.Context
 
         public DbSet<Payment> Payments { get; set; }
 
-
         public DatabaseContext(DbContextOptions options) : base(options)
         {
         }

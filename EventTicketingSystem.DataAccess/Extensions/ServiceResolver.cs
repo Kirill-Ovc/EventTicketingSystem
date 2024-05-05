@@ -40,7 +40,7 @@ namespace EventTicketingSystem.DataAccess.Extensions
 
             services.Configure<DatabaseSettings>(configuration.GetSection(DatabaseSettings.SectionName));
 
-            services.AddDbContext<DatabaseContext>(options => options.UseSqlite(databaseSettings.GetConnectionString()));
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlite(databaseSettings.ConnectionString));
         }
 
         private static void RegisterRepositories(this IServiceCollection services)

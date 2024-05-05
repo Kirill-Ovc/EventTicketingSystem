@@ -141,7 +141,7 @@ namespace EventTicketingSystem.DataAccess.Seed
                 Id = 1,
                 VenueId = 1,
                 EventInfoId = 1,
-                Time = new DateTime(2024, 06, 01, 12, 0, 0),
+                Time = new DateTime(2024, 06, 01, 12, 0, 0, DateTimeKind.Utc),
                 Name = "Linkin Park Concert 1",
             };
             var event2 = new Event
@@ -149,7 +149,7 @@ namespace EventTicketingSystem.DataAccess.Seed
                 Id = 2,
                 VenueId = 1,
                 EventInfoId = 1,
-                Time = new DateTime(2024, 06, 03, 12, 0, 0),
+                Time = new DateTime(2024, 06, 03, 12, 0, 0, DateTimeKind.Utc),
                 Name = "Linkin Park Concert 2",
             };
             await _context.AddAsync(event1);
