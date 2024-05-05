@@ -11,5 +11,6 @@
         public int PositionY { get; set; }
         public string Type { get; set; }
         public virtual Section Section { get; set; }
+        public virtual Venue Venue { get; set; }
     }
 }

@@ -54,5 +54,35 @@ namespace EventTicketingSystem.DataAccess.Services
                 await _context.EventSeats.AddAsync(eventSeat);
             }
         }
+
+        public async Task<Seat> Find(int id)
+        {
+            return await _context.Seats.FindAsync(id);
+        }
+
+        public async Task Add(Seat seat)
+        {
+            await _context.Seats.AddAsync(seat);
+        }
+
+        public Task Update(Seat seat)
+        {
+            _context.Seats.Update(seat);
+            return Task.CompletedTask;
+        }
+
+        public async Task Delete(int id)
+        {
+            var seat = await _context.Seats.FindAsync(id);
+            if (seat != null)
+            {
+                _context.Seats.Remove(seat);
+            }
+        }
+
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

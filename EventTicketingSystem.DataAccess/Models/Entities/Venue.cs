@@ -9,5 +9,6 @@
         public string Information { get; set; }
         public string PhotoUrl { get; set; }
         public string SeatMapUrl { get; set; }
+        public virtual City City { get; set; }
     }
 }

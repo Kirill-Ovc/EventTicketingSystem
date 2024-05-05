@@ -14,28 +14,19 @@ namespace EventTicketingSystem.DataAccess.Services
             _context = context;
         }
 
-        public async Task<ICollection<User>> GetUsers()
-        {
-            return await _context.Users.ToListAsync();
-        }
-
-        public async Task<User> GetUserById(int id)
+        public async Task<User> Find(int id)
         {
             return await _context.Users.FindAsync(id);
-        }
-
-        public async Task<User> GetUserByUsername(string username)
-        {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task Add(User user)
         {
             await _context.AddAsync(user);
         }
-        public void Update(User user)
+        public Task Update(User user)
         {
             _context.Users.Update(user);
+            return Task.CompletedTask;
         }
 
         public async Task Delete(int id)
@@ -50,6 +41,16 @@ namespace EventTicketingSystem.DataAccess.Services
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<User>> GetUsers()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
     }
 }

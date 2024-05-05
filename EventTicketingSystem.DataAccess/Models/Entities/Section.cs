@@ -10,5 +10,6 @@
         public int Size { get; set; }
         public string Color { get; set; }
         public int Capacity { get; set; }
+        public virtual Venue Venue { get; set; }
     }
 }

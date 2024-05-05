@@ -14,19 +14,19 @@ namespace EventTicketingSystem.DataAccess.Services
             _context = context;
         }
 
-        public async Task<ICollection<EventInfo>> GetEvents()
-        {
-            return await _context.EventInfos
-                .Include(e => e.EventOccurrences)
-                .ToListAsync();
-        }
-
-        public async Task<EventInfo> GetEventById(int id)
+        public async Task<EventInfo> Find(int id)
         {
             return await _context.EventInfos
                 .Include(e => e.EventOccurrences)
                 .SingleOrDefaultAsync(e => e.Id == id);
 
+        }
+
+        public async Task<ICollection<EventInfo>> GetEvents()
+        {
+            return await _context.EventInfos
+                .Include(e => e.EventOccurrences)
+                .ToListAsync();
         }
 
         public async Task<ICollection<EventInfo>> GetEventsByCity(int cityId)
@@ -49,19 +49,20 @@ namespace EventTicketingSystem.DataAccess.Services
             return await _context.EventInfos.Where(e => eventIds.Contains(e.Id)).ToListAsync();
         }
 
-        public async Task AddEventInfo(EventInfo eventInfo)
+        public async Task Add(EventInfo eventInfo)
         {
             await _context.AddAsync(eventInfo);
         }
 
-        public void UpdateEventInfo(EventInfo eventInfo)
+        public Task Update(EventInfo eventInfo)
         {
             _context.EventInfos.Update(eventInfo);
+            return Task.CompletedTask;
         }
 
-        public void DeleteEventInfo(int id)
+        public async Task Delete(int id)
         {
-            var eventInfo = _context.EventInfos.Find(id);
+            var eventInfo = await _context.EventInfos.FindAsync(id);
             if (eventInfo != null)
             {
                 _context.RemoveRange(eventInfo.EventOccurrences);
@@ -69,5 +70,9 @@ namespace EventTicketingSystem.DataAccess.Services
             }
         }
 
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

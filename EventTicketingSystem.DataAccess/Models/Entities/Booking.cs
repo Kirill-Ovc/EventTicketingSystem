@@ -11,5 +11,7 @@ namespace EventTicketingSystem.DataAccess.Models.Entities
         public decimal Price { get; set; }
         public string Token { get; set; }
         public DateTime ExpirationTimeStamp { get; set; }
+        public virtual EventSeat EventSeat { get; set; }
+        public virtual User User { get; set; }
     }
 }

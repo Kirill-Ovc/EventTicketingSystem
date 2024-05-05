@@ -13,5 +13,6 @@ namespace EventTicketingSystem.DataAccess.Models.Entities
         public decimal Price { get; set; }
 
         public virtual EventSeat EventSeat { get; set; }
+        public virtual User User { get; set; }
     }
 }

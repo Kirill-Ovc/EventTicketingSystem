@@ -18,9 +18,34 @@ namespace EventTicketingSystem.DataAccess.Services
             _mapper = mapper;
         }
 
-        public async Task AddTicket(Ticket ticket)
+        public async Task<Ticket> Find(int id)
+        {
+            return await _context.Tickets.FindAsync(id);
+        }
+
+        public async Task Add(Ticket ticket)
         {
             await _context.AddAsync(ticket);
+        }
+
+        public Task Update(Ticket ticket)
+        {
+            _context.Tickets.Update(ticket);
+            return Task.CompletedTask;
+        }
+
+        public async Task Delete(int id)
+        {
+            var ticket = await _context.Tickets.FindAsync(id);
+            if (ticket != null)
+            {
+                _context.Tickets.Remove(ticket);
+            }
+        }
+
+        public async Task SaveChanges()
+        {
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<TicketDto>> GetTickets(int userId)
