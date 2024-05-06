@@ -1,6 +1,6 @@
 ﻿namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    internal class Seat
+    public class Seat
     {
         public int Id { get; set; }
         public int VenueId { get; set; }

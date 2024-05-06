@@ -1,6 +1,6 @@
 ﻿namespace EventTicketingSystem.DataAccess.Models.Enums
 {
-    internal enum EventSeatStatus
+    public enum EventSeatStatus
     {
         Available = 0,
         Booked = 1,

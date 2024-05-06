@@ -50,7 +50,7 @@ namespace EventTicketingSystem.DataAccess.Seed
         {
             if (await _context.Cities.AnyAsync()) return;
 
-            var cityData = await File.ReadAllTextAsync("Seed/Data/CitiesSeedData.json");
+            var cityData = await File.ReadAllTextAsync("Seed/Data/CitySeedData.json");
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var cities = JsonSerializer.Deserialize<List<City>>(cityData, options);
 

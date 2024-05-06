@@ -3,7 +3,7 @@
 var seedService = ServiceProvider.GetSeedService();
 await seedService.SeedAllData();
 
-var repository = ServiceProvider.GetUserRepository();
-var result = await repository.GetUsers();
+var userRepository = ServiceProvider.GetUserRepository();
+var result = await userRepository.GetUsers();
 
 Console.WriteLine(result.First().Name);

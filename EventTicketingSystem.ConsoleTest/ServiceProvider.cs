@@ -27,6 +27,12 @@ namespace EventTicketingSystem.ConsoleTest
             return service;
         }
 
+        public static ISeatRepository GetSeatRepository()
+        {
+            var service = _serviceProvider.GetService<ISeatRepository>();
+            return service;
+        }
+
         public static ISeedService GetSeedService()
         {
             var service = _serviceProvider.GetService<ISeedService>();
