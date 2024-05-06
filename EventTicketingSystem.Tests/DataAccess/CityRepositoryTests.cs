@@ -1,5 +1,6 @@
 ﻿using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Context;
+using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Services;
 using EventTicketingSystem.Tests.Helpers;
 using EventTicketingSystem.Tests.Seed;
@@ -8,7 +9,7 @@ namespace EventTicketingSystem.Tests.DataAccess
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
-    public class CityRepositoryTests: IDisposable
+    public class CityRepositoryTests
     {
         private readonly TestDataReader _dataProvider;
         private ICityRepository _cityRepository;
@@ -40,9 +41,9 @@ namespace EventTicketingSystem.Tests.DataAccess
             var city = await _cityRepository.Find(1);
 
             Assert.IsNotNull(city);
-            Assert.AreEqual(1, city.Id);
-            Assert.AreEqual("Moscow", city.Name);
-            Assert.AreEqual("Russia", city.Country);
+            Assert.That(city.Id, Is.EqualTo(1));
+            Assert.That(city.Name, Is.EqualTo("Moscow"));
+            Assert.That(city.Country, Is.EqualTo("Russia"));
         }
 
         [Test]
@@ -52,17 +53,63 @@ namespace EventTicketingSystem.Tests.DataAccess
             var cities = (await _cityRepository.GetCities()).ToList();
 
             Assert.IsNotNull(cities);
-            Assert.AreEqual(expectedCities.Count, cities.Count);
+            Assert.That(cities.Count, Is.EqualTo(expectedCities.Count));
             for (int i = 0; i < cities.Count; i++)
             {
-                Assert.AreEqual(expectedCities[i].Name, cities[i].Name);
-                Assert.AreEqual(expectedCities[i].Country, cities[i].Country);
+                Assert.That(cities[i].Name, Is.EqualTo(expectedCities[i].Name));
+                Assert.That(cities[i].Country, Is.EqualTo(expectedCities[i].Country));
             }
         }
 
-        public void Dispose()
+        [Test]
+        public async Task CityRepository_Add_AddsCity()
         {
-            _context?.Dispose();
+            var city = new City
+            {
+                Name = "New City",
+                Country = "New Country"
+            };
+
+            await _cityRepository.Add(city);
+            await _cityRepository.SaveChanges();
+
+            var addedCity = await _cityRepository.Find(city.Id);
+
+            Assert.IsNotNull(addedCity);
+            Assert.That(addedCity.Name, Is.EqualTo(city.Name));
+            Assert.That(addedCity.Country, Is.EqualTo(city.Country));
+        }
+
+        [Test]
+        public async Task CityRepository_Update_UpdatesCity()
+        {
+            var city = await _cityRepository.Find(1);
+            city.Name = "Updated City";
+            city.Country = "Updated Country";
+
+            await _cityRepository.Update(city);
+            await _cityRepository.SaveChanges();
+
+            var updatedCity = await _cityRepository.Find(city.Id);
+
+            Assert.IsNotNull(updatedCity);
+            Assert.That(updatedCity.Name, Is.EqualTo(city.Name));
+            Assert.That(updatedCity.Country, Is.EqualTo(city.Country));
+        }
+
+        [Test]
+        public async Task CityRepository_Delete_DeletesCity()
+        {
+            var existingCity = await _cityRepository.Find(1);
+
+            Assert.IsNotNull(existingCity);
+
+            await _cityRepository.Delete(1);
+            await _cityRepository.SaveChanges();
+
+            var deletedCity = await _cityRepository.Find(1);
+
+            Assert.IsNull(deletedCity);
         }
     }
 }
