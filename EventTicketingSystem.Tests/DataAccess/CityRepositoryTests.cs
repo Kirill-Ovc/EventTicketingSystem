@@ -4,6 +4,7 @@ using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Services;
 using EventTicketingSystem.Tests.Helpers;
 using EventTicketingSystem.Tests.Seed;
+using FluentAssertions;
 
 namespace EventTicketingSystem.Tests.DataAccess
 {
@@ -40,10 +41,10 @@ namespace EventTicketingSystem.Tests.DataAccess
         {
             var city = await _cityRepository.Find(1);
 
-            Assert.IsNotNull(city);
-            Assert.That(city.Id, Is.EqualTo(1));
-            Assert.That(city.Name, Is.EqualTo("Moscow"));
-            Assert.That(city.Country, Is.EqualTo("Russia"));
+            city.Should().NotBeNull();
+            city.Id.Should().Be(1);
+            city.Name.Should().Be("Moscow");
+            city.Country.Should().Be("Russia");
         }
 
         [Test]
@@ -52,12 +53,12 @@ namespace EventTicketingSystem.Tests.DataAccess
             var expectedCities = await _dataProvider.GetCities();
             var cities = (await _cityRepository.GetCities()).ToList();
 
-            Assert.IsNotNull(cities);
-            Assert.That(cities.Count, Is.EqualTo(expectedCities.Count));
+            cities.Should().NotBeNull();
+            cities.Should().HaveCount(expectedCities.Count);
             for (int i = 0; i < cities.Count; i++)
             {
-                Assert.That(cities[i].Name, Is.EqualTo(expectedCities[i].Name));
-                Assert.That(cities[i].Country, Is.EqualTo(expectedCities[i].Country));
+                cities[i].Name.Should().Be(expectedCities[i].Name);
+                cities[i].Country.Should().Be(expectedCities[i].Country);
             }
         }
 
@@ -75,9 +76,9 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var addedCity = await _cityRepository.Find(city.Id);
 
-            Assert.IsNotNull(addedCity);
-            Assert.That(addedCity.Name, Is.EqualTo(city.Name));
-            Assert.That(addedCity.Country, Is.EqualTo(city.Country));
+            addedCity.Should().NotBeNull();
+            addedCity.Name.Should().Be(city.Name);
+            addedCity.Country.Should().Be(city.Country);
         }
 
         [Test]
@@ -92,9 +93,9 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var updatedCity = await _cityRepository.Find(city.Id);
 
-            Assert.IsNotNull(updatedCity);
-            Assert.That(updatedCity.Name, Is.EqualTo(city.Name));
-            Assert.That(updatedCity.Country, Is.EqualTo(city.Country));
+            updatedCity.Should().NotBeNull();
+            updatedCity.Name.Should().Be(city.Name);
+            updatedCity.Country.Should().Be(city.Country);
         }
 
         [Test]
@@ -109,7 +110,15 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var deletedCity = await _cityRepository.Find(1);
 
-            Assert.IsNull(deletedCity);
+            deletedCity.Should().BeNull();
         }
+
+        [Test]
+        public void CityRepository_Delete_WhenCityDoesNotExist_DoesNotThrowException()
+        {
+            Assert.DoesNotThrowAsync(async () => await _cityRepository.Delete(100));
+            Assert.DoesNotThrowAsync(async () => await _cityRepository.SaveChanges());
+        }
+    
     }
 }
