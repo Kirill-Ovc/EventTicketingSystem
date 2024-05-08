@@ -24,6 +24,14 @@ namespace EventTicketingSystem.Tests.Seed
             await SeedEntities(cities);
         }
 
+        public async Task SeedUsers()
+        {
+            if (await _context.Users.AnyAsync()) return;
+
+            var users = await _dataProvider.GetUsers();
+            await SeedEntities(users);
+        }
+
         private async Task SeedEntities<T>(List<T> entities) where T : class
         {
             await _context.AddRangeAsync(entities);
