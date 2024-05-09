@@ -24,10 +24,14 @@ namespace EventTicketingSystem.DataAccess.Services
             await _context.Venues.AddAsync(venue);
         }
 
-        public Task Update(Venue venue)
+        public async Task Update(Venue venue)
         {
+            var entity = await _context.Venues.FindAsync(venue.Id);
+            if (entity == null)
+            {
+                throw new InvalidOperationException("Update failed. Can't find entity by Id");
+            }
             _context.Venues.Update(venue);
-            return Task.CompletedTask;
         }
 
         public async Task Delete(int id)

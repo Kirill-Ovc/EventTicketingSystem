@@ -12,7 +12,7 @@ namespace EventTicketingSystem.DataAccess.Helpers
                 .ForMember(dest => dest.EventName, opt =>
                     opt.MapFrom(src => src.EventSeat.Event.Name))
                 .ForMember(dest => dest.EventDateTime, opt =>
-                    opt.MapFrom(src => src.EventSeat.Event.Time))
+                    opt.MapFrom(src => src.EventSeat.Event.DataAndTime))
                 .ForMember(dest => dest.EventVenue, opt =>
                     opt.MapFrom(src => src.EventSeat.Event.Venue.Name))
                 .ForMember(dest => dest.SeatNumber, opt =>

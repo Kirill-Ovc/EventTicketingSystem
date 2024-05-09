@@ -85,7 +85,7 @@ namespace EventTicketingSystem.DataAccess.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Time")
+                    b.Property<DateTime>("DataAndTime")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VenueId")
