@@ -28,6 +28,21 @@ namespace EventTicketingSystem.DataAccess.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
+        /// <summary>
+        /// Initialize Database with initial data
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static void InitializeDatabase(this IServiceProvider serviceProvider)
+        {
+            var dbContext = serviceProvider.GetService<DatabaseContext>();
+            if (dbContext == null)
+            {
+                throw new InvalidOperationException("Database Context is not registered. AddDataAccess() method was not called");
+            }
+            DbInitializer.Initialize(dbContext);
+        }
+
         private static void RegisterContext(this IServiceCollection services, IConfiguration configuration)
         {
             ArgumentNullException.ThrowIfNull(configuration);
