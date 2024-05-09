@@ -21,6 +21,7 @@ namespace EventTicketingSystem.DataAccess.Extensions
         /// <param name="configuration">Application configuration properties with configuration section for <see cref="EmployeeIdentificationSettings"/></param>
         public static void AddDataAccess(this IServiceCollection services, IConfiguration configuration)
         {
+            ArgumentNullException.ThrowIfNull(configuration);
             services.RegisterContext(configuration);
             services.RegisterRepositories();
 
@@ -67,6 +68,8 @@ namespace EventTicketingSystem.DataAccess.Extensions
             services.AddScoped<IEventInfoRepository, EventInfoRepository>();
             services.AddScoped<ISeatRepository, SeatRepository>();
             services.AddScoped<IBookingRepository, BookingRepository>();
+            services.AddScoped<IVenueRepository, VenueRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
         }
     }
 }

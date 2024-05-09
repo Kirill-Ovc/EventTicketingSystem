@@ -3,6 +3,7 @@ using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Context;
 using EventTicketingSystem.DataAccess.Models.DTOs;
 using EventTicketingSystem.DataAccess.Models.Entities;
+using EventTicketingSystem.DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventTicketingSystem.DataAccess.Services
@@ -39,7 +40,7 @@ namespace EventTicketingSystem.DataAccess.Services
             var ticket = await _context.Tickets.FindAsync(id);
             if (ticket != null)
             {
-                _context.Tickets.Remove(ticket);
+                ticket.Status = TicketStatus.Cancelled;
             }
         }
 
