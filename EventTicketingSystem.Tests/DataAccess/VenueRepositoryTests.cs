@@ -139,7 +139,7 @@ namespace EventTicketingSystem.Tests.DataAccess
         }
 
         [Test]
-        public async Task VenueRepository_Update_WhenNotExist_DoNothing()
+        public async Task VenueRepository_Update_WhenNotExist_ThrowsException()
         {
             var venue = await _venueRepository.Find(1);
             var newVenue = new Venue
@@ -151,8 +151,12 @@ namespace EventTicketingSystem.Tests.DataAccess
                 Address = venue.Address,
             };
 
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await _venueRepository.Update(newVenue));
-            await _venueRepository.SaveChanges();
+            Assert.That(async () =>
+            {
+                await _venueRepository.Update(newVenue);
+                await _venueRepository.SaveChanges();
+            }, Throws.Exception.TypeOf<InvalidOperationException>());
+
             var updatedVenue = await _venueRepository.Find(newVenue.Id);
 
             updatedVenue.Should().BeNull();

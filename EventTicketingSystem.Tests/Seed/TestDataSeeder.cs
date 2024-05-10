@@ -40,16 +40,12 @@ namespace EventTicketingSystem.Tests.Seed
             await SeedEntities(venues);
         }
 
-        public async Task SeedSeats()
+        public async Task SeedSeats(int venueId)
         {
             if (await _context.Seats.AnyAsync()) return;
 
-            var sections = _dataProvider.GetSectionsWithSeats(2);
+            var sections = _dataProvider.GetSectionsWithSeats(venueId);
             await SeedEntities(sections);
-            foreach (var seats in sections)
-            {
-                await SeedEntities(seats.Seats);
-            }
         }
 
         public async Task SeedEvents()
@@ -58,10 +54,18 @@ namespace EventTicketingSystem.Tests.Seed
 
             var events = _dataProvider.GetEvents();
             await SeedEntities(events);
-            foreach (var eventInfo in events)
-            {
-                await SeedEntities(eventInfo.EventOccurrences);
-            }
+        }
+
+        public async Task SeedEventSeats(int venueId, int eventId)
+        {
+            if (await _context.EventSeats.AnyAsync()) return;
+
+            var venueSeats = _context.Seats
+                .Where(s => s.VenueId == venueId)
+                .OrderBy(s => s.Id)
+                .ToList();
+            var eventSeats = _dataProvider.GetEventSeats(venueSeats, eventId);
+            await SeedEntities(eventSeats);
         }
 
         private async Task SeedEntities<T>(IEnumerable<T> entities) where T : class

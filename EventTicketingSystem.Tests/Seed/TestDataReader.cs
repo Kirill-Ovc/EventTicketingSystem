@@ -1,4 +1,7 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Entities;
+using EventTicketingSystem.DataAccess.Models.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace EventTicketingSystem.Tests.Seed
@@ -180,6 +183,23 @@ namespace EventTicketingSystem.Tests.Seed
                 }
             };
             return new List<EventInfo>() { event1, event2, event3 };
+        }
+
+        public List<EventSeat> GetEventSeats(List<Seat> venueSeats, int eventId)
+        {
+            var eventSeats = new List<EventSeat>();
+            foreach (var seat in venueSeats)
+            {
+                var eventSeat = new EventSeat
+                {
+                    EventId = eventId,
+                    SeatId = seat.Id,
+                    Name = seat.Name,
+                    Status = EventSeatStatus.Available
+                };
+                eventSeats.Add(eventSeat);
+            }
+            return eventSeats;
         }
     }
 }

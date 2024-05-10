@@ -3,6 +3,7 @@ using EventTicketingSystem.DataAccess.Models.Context;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace EventTicketingSystem.DataAccess.Services
 {
@@ -15,15 +16,16 @@ namespace EventTicketingSystem.DataAccess.Services
             _context = context;
         }
 
-        public async Task<ICollection<Section>> GetSections(int eventId)
+        public async Task<ICollection<Section>> GetSections(int venueId)
         {
-            var sectionIds = await _context.EventSeats
-                .Where(s => s.EventId == eventId)
-                .Select(s => s.Seat.SectionId)
-                .Distinct()
-                .ToListAsync();
+            return await _context.Sections.Where(s => s.VenueId == venueId).ToListAsync();
+        }
 
-            return await _context.Sections.Where(s => sectionIds.Contains(s.Id)).ToListAsync();
+        public async Task<ICollection<EventSeat>> GetEventSeats(int eventId)
+        {
+            return await _context.EventSeats
+                .Where(s => s.EventId == eventId)
+                .ToListAsync();
         }
 
         public async Task<ICollection<EventSeat>> GetEventSeats(int eventId, int sectionId)
@@ -42,7 +44,7 @@ namespace EventTicketingSystem.DataAccess.Services
         public async Task CreateEventSeats(int eventId, int venueId)
         {
             var venueSeats = await GetVenueSeats(venueId);
-            foreach (var seat in venueSeats)
+            foreach (var seat in venueSeats.OrderBy(x => x.Id))
             {
                 var eventSeat = new EventSeat
                 {
@@ -55,6 +57,19 @@ namespace EventTicketingSystem.DataAccess.Services
             }
         }
 
+        public async Task UpdateEventSeat(EventSeat eventSeat)
+        {
+            var entity = await _context.EventSeats.FindAsync(eventSeat.Id);
+            if (entity == null)
+            {
+                throw new InvalidOperationException("Update failed. Can't find entity by Id");
+            }
+            entity.Name = eventSeat.Name;
+            entity.Status = eventSeat.Status;
+            _context.EventSeats.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<Seat> Find(int id)
         {
             return await _context.Seats.FindAsync(id);
@@ -65,10 +80,14 @@ namespace EventTicketingSystem.DataAccess.Services
             await _context.Seats.AddAsync(seat);
         }
 
-        public Task Update(Seat seat)
+        public async Task Update(Seat seat)
         {
+            var entity = await _context.Venues.FindAsync(seat.Id);
+            if (entity == null)
+            {
+                throw new InvalidOperationException("Update failed. Can't find entity by Id");
+            }
             _context.Seats.Update(seat);
-            return Task.CompletedTask;
         }
 
         public async Task Delete(int id)
