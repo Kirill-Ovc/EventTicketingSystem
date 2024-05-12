@@ -6,6 +6,7 @@ using EventTicketingSystem.DataAccess.Services;
 using EventTicketingSystem.Tests.Helpers;
 using EventTicketingSystem.Tests.Seed;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 
 namespace EventTicketingSystem.Tests.DataAccess
 {
@@ -44,13 +45,17 @@ namespace EventTicketingSystem.Tests.DataAccess
         [Test]
         public async Task SeatRepository_Find_ReturnsSeat()
         {
-            var sections = _dataProvider.GetSectionsWithSeats(1);
-            var expectedSeat = sections[0].Seats.First();
+            var expectedSeat = new Seat()
+            {
+                Id = 1,
+                Name = "A1-1",
+                RowNumber = 1,
+                SectionId = 1,
+                VenueId = 1
+            };
             var seat = await _seatRepository.Find(1);
 
-            seat.Should().NotBeNull();
-            seat.Id.Should().Be(1);
-            CompareSeats(seat, expectedSeat);
+            seat.Should().BeEquivalentTo(expectedSeat, ExcludeProperties);
         }
 
         [Test]
@@ -69,8 +74,7 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var addedSeat = await _seatRepository.Find(seat.Id);
 
-            addedSeat.Should().NotBeNull();
-            CompareSeats(addedSeat, seat);
+            addedSeat.Should().BeEquivalentTo(seat, ExcludeProperties);
         }
 
         [Test]
@@ -85,8 +89,7 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var updatedSeat = await _seatRepository.Find(seat.Id);
 
-            updatedSeat.Should().NotBeNull();
-            CompareSeats(updatedSeat, seat);
+            updatedSeat.Should().BeEquivalentTo(seat, ExcludeProperties);
         }
 
         [Test]
@@ -104,7 +107,6 @@ namespace EventTicketingSystem.Tests.DataAccess
             deletedSeat.Should().BeNull();
         }
 
-
         [Test]
         public async Task SeatRepository_GetSections_ReturnsAllSectionsInVenue()
         {
@@ -112,16 +114,8 @@ namespace EventTicketingSystem.Tests.DataAccess
             var expectedSections = _dataProvider.GetSectionsWithSeats(venueId);
             var sections = (await _seatRepository.GetSections(venueId)).OrderBy(x => x.Id).ToList();
 
-            sections.Should().NotBeNull();
-            sections.Should().NotBeEmpty();
-            sections.Should().HaveCount(expectedSections.Count);
-            for (int i = 0; i < sections.Count; i++)
-            {
-                sections[i].Id.Should().Be(expectedSections[i].Id);
-                sections[i].Name.Should().Be(expectedSections[i].Name);
-                sections[i].Capacity.Should().Be(expectedSections[i].Capacity);
-                sections[i].VenueId.Should().Be(expectedSections[i].VenueId);
-            }
+            sections.Should().BeEquivalentTo(expectedSections, options =>
+                options.Excluding(o => o.Venue).Excluding(o => o.Seats));
         }
 
         [Test]
@@ -133,14 +127,8 @@ namespace EventTicketingSystem.Tests.DataAccess
             var venueSeats = (await _seatRepository.GetVenueSeats(venueId)).OrderBy(x => x.Id).ToList();
             var expectedSeats = _dataProvider.GetEventSeats(venueSeats, eventId);
             var seats = (await _seatRepository.GetEventSeats(eventId)).OrderBy(x => x.Id).ToList();
-            
-            seats.Should().NotBeNull();
-            seats.Should().NotBeEmpty();
-            seats.Should().HaveCount(expectedSeats.Count);
-            for (int i = 0; i < seats.Count; i++)
-            {
-                CompareEventSeats(seats[i], expectedSeats[i]);
-            }
+
+            seats.Should().BeEquivalentTo(expectedSeats, ExcludeProperties);
         }
 
         [Test]
@@ -158,13 +146,7 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var seats = (await _seatRepository.GetEventSeats(eventId, sectionId)).OrderBy(x => x.Id).ToList();
 
-            seats.Should().NotBeNull();
-            seats.Should().NotBeEmpty();
-            seats.Should().HaveCount(expectedSeats.Count);
-            for (int i = 0; i < seats.Count; i++)
-            {
-                CompareEventSeats(seats[i], expectedSeats[i]);
-            }
+            seats.Should().BeEquivalentTo(expectedSeats, ExcludeProperties);
         }
 
         [Test]
@@ -177,13 +159,7 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var seats = (await _seatRepository.GetVenueSeats(venueId)).OrderBy(x => x.Id).ToList();
 
-            seats.Should().NotBeNull();
-            seats.Should().NotBeEmpty();
-            seats.Should().HaveCount(expectedSeats.Count);
-            for (int i = 0; i < seats.Count; i++)
-            {
-                CompareSeats(seats[i], expectedSeats[i]);
-            }
+            seats.Should().BeEquivalentTo(expectedSeats, ExcludeProperties);
         }
 
         [Test]
@@ -192,20 +168,14 @@ namespace EventTicketingSystem.Tests.DataAccess
             var eventId = 1;
             var venueId = 1;
             var venueSeats = (await _seatRepository.GetVenueSeats(venueId)).OrderBy(x => x.Id).ToList();
-            var eventSeats = _dataProvider.GetEventSeats(venueSeats, eventId);
+            var expectedEventSeats = _dataProvider.GetEventSeats(venueSeats, eventId);
 
             await _seatRepository.CreateEventSeats(eventId, venueId);
             await _seatRepository.SaveChanges();
 
             var createdEventSeats = (await _seatRepository.GetEventSeats(eventId)).OrderBy(x => x.Id).ToList();
 
-            createdEventSeats.Should().NotBeNull();
-            createdEventSeats.Should().NotBeEmpty();
-            createdEventSeats.Should().HaveCount(eventSeats.Count);
-            for (int i = 0; i < createdEventSeats.Count; i++)
-            {
-                CompareEventSeats(createdEventSeats[i], eventSeats[i]);
-            }
+            createdEventSeats.Should().BeEquivalentTo(expectedEventSeats, ExcludeProperties);
         }
 
         [Test]
@@ -214,18 +184,17 @@ namespace EventTicketingSystem.Tests.DataAccess
             var eventId = 1;
             var venueId = 1;
             await _seeder.SeedEventSeats(venueId, eventId);
-            var eventSeats = await _seatRepository.GetEventSeats(eventId);
-            var eventSeat = eventSeats.First();
+            var allEventSeats = await _seatRepository.GetEventSeats(eventId);
+            var eventSeat = allEventSeats.First();
             eventSeat.Status = EventSeatStatus.Booked;
 
             await _seatRepository.UpdateEventSeat(eventSeat);
             await _seatRepository.SaveChanges();
 
-            eventSeats = await _seatRepository.GetEventSeats(eventId);
-            var updatedEventSeat = eventSeats.FirstOrDefault(x => x.Id == eventSeat.Id);
+            allEventSeats = await _seatRepository.GetEventSeats(eventId);
+            var updatedEventSeat = allEventSeats.FirstOrDefault(x => x.Id == eventSeat.Id);
 
-            updatedEventSeat.Should().NotBeNull();
-            CompareEventSeats(updatedEventSeat, eventSeat);
+            updatedEventSeat.Should().BeEquivalentTo(eventSeat, ExcludeProperties);
         }
 
         [Test]
@@ -246,8 +215,8 @@ namespace EventTicketingSystem.Tests.DataAccess
                 SectionId = 1,
                 VenueId = 1
             };
-            
-            Assert.That(async () => 
+
+            Assert.That(async () =>
             {
                 await _seatRepository.Update(newSeat);
                 await _seatRepository.SaveChanges();
@@ -263,21 +232,21 @@ namespace EventTicketingSystem.Tests.DataAccess
             Assert.DoesNotThrowAsync(async () => await _seatRepository.Delete(100));
             Assert.DoesNotThrowAsync(async () => await _seatRepository.SaveChanges());
         }
-        
-        private void CompareSeats(Seat actual, Seat expected)
+
+        private EquivalencyAssertionOptions<EventSeat> ExcludeProperties(EquivalencyAssertionOptions<EventSeat> options)
         {
-            actual.Name.Should().Be(expected.Name);
-            actual.SectionId.Should().Be(expected.SectionId);
-            actual.VenueId.Should().Be(expected.VenueId);
-            actual.RowNumber.Should().Be(expected.RowNumber);
+            options.Excluding(o => o.Id);
+            options.Excluding(o => o.Event);
+            options.Excluding(o => o.Seat);
+            return options;
         }
 
-        private void CompareEventSeats(EventSeat actual, EventSeat expected)
+        private EquivalencyAssertionOptions<Seat> ExcludeProperties(EquivalencyAssertionOptions<Seat> options)
         {
-            actual.Name.Should().Be(expected.Name);
-            actual.EventId.Should().Be(expected.EventId);
-            actual.SeatId.Should().Be(expected.SeatId);
-            actual.Status.Should().Be(expected.Status);
+            options.Excluding(o => o.Id);
+            options.Excluding(o => o.Venue);
+            options.Excluding(o => o.Section);
+            return options;
         }
     }
 }

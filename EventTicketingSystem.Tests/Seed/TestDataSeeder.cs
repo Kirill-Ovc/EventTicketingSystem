@@ -9,7 +9,7 @@ namespace EventTicketingSystem.Tests.Seed
         private readonly TestDataReader _dataProvider;
 
         public TestDataSeeder(
-            DatabaseContext context, 
+            DatabaseContext context,
             TestDataReader dataProvider)
         {
             _context = context;
@@ -60,10 +60,10 @@ namespace EventTicketingSystem.Tests.Seed
         {
             if (await _context.EventSeats.AnyAsync()) return;
 
-            var venueSeats = _context.Seats
+            var venueSeats = await _context.Seats
                 .Where(s => s.VenueId == venueId)
                 .OrderBy(s => s.Id)
-                .ToList();
+                .ToListAsync();
             var eventSeats = _dataProvider.GetEventSeats(venueSeats, eventId);
             await SeedEntities(eventSeats);
         }

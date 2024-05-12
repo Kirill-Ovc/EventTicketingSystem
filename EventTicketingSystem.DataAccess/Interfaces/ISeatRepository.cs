@@ -2,7 +2,7 @@
 
 namespace EventTicketingSystem.DataAccess.Interfaces;
 
-public interface ISeatRepository: IRepository<Seat>
+public interface ISeatRepository : IRepository<Seat>
 {
     Task<ICollection<Section>> GetSections(int venueId);
     Task<ICollection<EventSeat>> GetEventSeats(int eventId);

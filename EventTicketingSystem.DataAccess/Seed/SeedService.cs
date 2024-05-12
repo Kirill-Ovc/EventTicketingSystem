@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
-using EventTicketingSystem.DataAccess.Interfaces;
+﻿using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Context;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace EventTicketingSystem.DataAccess.Seed
 {

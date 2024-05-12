@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTicketingSystem.DataAccess.Models.Context
 {
-    internal class DatabaseContext: DbContext
+    internal class DatabaseContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
         public DbSet<City> Cities { get; set; }
-        
+
         public DbSet<Venue> Venues { get; set; }
 
         public DbSet<Event> Events { get; set; }

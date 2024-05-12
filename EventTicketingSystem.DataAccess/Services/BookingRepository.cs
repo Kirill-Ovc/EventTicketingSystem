@@ -30,7 +30,7 @@ namespace EventTicketingSystem.DataAccess.Services
             _context.Bookings.Update(booking);
             return Task.CompletedTask;
         }
-        
+
         public async Task Delete(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);
@@ -44,12 +44,12 @@ namespace EventTicketingSystem.DataAccess.Services
         {
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task<ICollection<Booking>> GetByUserId(int userId)
         {
             return await _context.Bookings
-                .Where(b => b.UserId == userId && 
-                            b.Status == BookingStatus.Active && 
+                .Where(b => b.UserId == userId &&
+                            b.Status == BookingStatus.Active &&
                             b.ExpirationTimeStamp > DateTime.UtcNow)
                 .ToListAsync();
         }
@@ -57,7 +57,7 @@ namespace EventTicketingSystem.DataAccess.Services
         public async Task<ICollection<Booking>> GetActiveBookings()
         {
             return await _context.Bookings
-                .Where(b => b.Status == BookingStatus.Active && 
+                .Where(b => b.Status == BookingStatus.Active &&
                             b.ExpirationTimeStamp > DateTime.UtcNow)
                 .ToListAsync();
         }

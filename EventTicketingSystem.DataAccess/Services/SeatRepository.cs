@@ -3,7 +3,6 @@ using EventTicketingSystem.DataAccess.Models.Context;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace EventTicketingSystem.DataAccess.Services
 {

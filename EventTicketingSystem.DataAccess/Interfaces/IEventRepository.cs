@@ -2,7 +2,7 @@
 
 namespace EventTicketingSystem.DataAccess.Interfaces;
 
-public interface IEventRepository: IRepository<Event>
+public interface IEventRepository : IRepository<Event>
 {
     Task<ICollection<Event>> GetEvents();
     Task<ICollection<Event>> GetEventsByCity(int cityId);

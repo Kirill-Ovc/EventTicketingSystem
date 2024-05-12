@@ -2,8 +2,8 @@
 {
     public enum TicketLevel
     {
-        Adult = 0, 
-        Child = 1, 
+        Adult = 0,
+        Child = 1,
         Vip = 2,
         Other = 3
     }

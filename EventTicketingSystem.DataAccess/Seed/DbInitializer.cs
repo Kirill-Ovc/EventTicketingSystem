@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using EventTicketingSystem.DataAccess.Models.Context;
+﻿using EventTicketingSystem.DataAccess.Models.Context;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace EventTicketingSystem.DataAccess.Seed
 {
@@ -18,7 +18,7 @@ namespace EventTicketingSystem.DataAccess.Seed
         {
             context.Database.OpenConnection();
             context.Database.EnsureCreated();
-            
+
             SeedCities(context).Wait();
             SeedUsers(context).Wait();
 
@@ -45,18 +45,18 @@ namespace EventTicketingSystem.DataAccess.Seed
             {
                 new()
                 {
-                    Id = 1, 
-                    Username = "admin", 
-                    Name = "Admin", 
-                    Password = "password", 
+                    Id = 1,
+                    Username = "admin",
+                    Name = "Admin",
+                    Password = "password",
                     Email = "admin@email"
                 },
                 new()
                 {
-                    Id = 2, 
-                    Username = "TestUser", 
-                    Name = "Test User", 
-                    Password = "password", 
+                    Id = 2,
+                    Username = "TestUser",
+                    Name = "Test User",
+                    Password = "password",
                     Email = "test@email"
                 }
             };

@@ -5,6 +5,7 @@ using EventTicketingSystem.DataAccess.Services;
 using EventTicketingSystem.Tests.Helpers;
 using EventTicketingSystem.Tests.Seed;
 using FluentAssertions;
+using System;
 
 namespace EventTicketingSystem.Tests.DataAccess
 {
@@ -42,11 +43,9 @@ namespace EventTicketingSystem.Tests.DataAccess
         {
             var venues = _dataProvider.GetVenues();
             var expectedVenue = venues[0];
-            var venue = await _venueRepository.Find(1);
+            var venue = await _venueRepository.Find(expectedVenue.Id);
 
-            venue.Should().NotBeNull();
-            venue.Id.Should().Be(1);
-            CompareVenues(venue, expectedVenue);
+            venue.Should().BeEquivalentTo(expectedVenue, options => options.Excluding(x => x.City));
         }
 
         [Test]
@@ -66,7 +65,7 @@ namespace EventTicketingSystem.Tests.DataAccess
             var addedVenue = await _venueRepository.Find(venue.Id);
 
             addedVenue.Should().NotBeNull();
-            CompareVenues(addedVenue, venue);
+            addedVenue.Should().BeEquivalentTo(venue, options => options.Excluding(x => x.City));
         }
 
         [Test]
@@ -82,7 +81,7 @@ namespace EventTicketingSystem.Tests.DataAccess
             var updatedVenue = await _venueRepository.Find(venue.Id);
 
             updatedVenue.Should().NotBeNull();
-            CompareVenues(updatedVenue, venue);
+            updatedVenue.Should().BeEquivalentTo(venue, options => options.Excluding(x => x.City));
         }
 
         [Test]
@@ -100,20 +99,13 @@ namespace EventTicketingSystem.Tests.DataAccess
             deletedVenue.Should().BeNull();
         }
 
-
         [Test]
         public async Task VenueRepository_GetVenues_ReturnsAllVenues()
         {
             var expectedVenues = _dataProvider.GetVenues();
             var venues = (await _venueRepository.GetVenues()).OrderBy(x => x.Id).ToList();
 
-            venues.Should().NotBeNull();
-            venues.Should().NotBeEmpty();
-            venues.Should().HaveCount(expectedVenues.Count);
-            for (int i = 0; i < venues.Count; i++)
-            {
-                CompareVenues(venues[i], expectedVenues[i]);
-            }
+            venues.Should().BeEquivalentTo(expectedVenues, options => options.Excluding(x => x.City));
         }
 
         [Test]
@@ -121,14 +113,8 @@ namespace EventTicketingSystem.Tests.DataAccess
         {
             var expectedVenues = _dataProvider.GetVenues().Where(v => v.CityId == 1).ToList();
             var venues = (await _venueRepository.GetVenuesByCity(1)).OrderBy(x => x.Id).ToList();
-            
-            venues.Should().NotBeNull();
-            venues.Should().NotBeEmpty();
-            venues.Should().HaveCount(expectedVenues.Count);
-            for (int i = 0; i < venues.Count; i++)
-            {
-                CompareVenues(venues[i], expectedVenues[i]);
-            }
+
+            venues.Should().BeEquivalentTo(expectedVenues, options => options.Excluding(x => x.City));
         }
 
         [Test]
@@ -167,14 +153,6 @@ namespace EventTicketingSystem.Tests.DataAccess
         {
             Assert.DoesNotThrowAsync(async () => await _venueRepository.Delete(100));
             Assert.DoesNotThrowAsync(async () => await _venueRepository.SaveChanges());
-        }
-        
-        private void CompareVenues(Venue actual, Venue expected)
-        {
-            actual.Name.Should().Be(expected.Name);
-            actual.CityId.Should().Be(expected.CityId);
-            actual.Address.Should().Be(expected.Address);
-            actual.Information.Should().Be(expected.Information);
         }
     }
 }

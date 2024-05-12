@@ -39,12 +39,15 @@ namespace EventTicketingSystem.Tests.DataAccess
         [Test]
         public async Task CityRepository_Find_ReturnsCity()
         {
-            var city = await _cityRepository.Find(1);
+            var expectedCity = new City
+            {
+                Id = 1,
+                Name = "Moscow",
+                Country = "Russia"
+            };
+            var city = await _cityRepository.Find(expectedCity.Id);
 
-            city.Should().NotBeNull();
-            city.Id.Should().Be(1);
-            city.Name.Should().Be("Moscow");
-            city.Country.Should().Be("Russia");
+            city.Should().BeEquivalentTo(expectedCity);
         }
 
         [Test]
@@ -53,13 +56,8 @@ namespace EventTicketingSystem.Tests.DataAccess
             var expectedCities = await _dataProvider.GetCities();
             var cities = (await _cityRepository.GetCities()).ToList();
 
-            cities.Should().NotBeNull();
-            cities.Should().HaveCount(expectedCities.Count);
-            for (int i = 0; i < cities.Count; i++)
-            {
-                cities[i].Name.Should().Be(expectedCities[i].Name);
-                cities[i].Country.Should().Be(expectedCities[i].Country);
-            }
+            cities.Should().BeEquivalentTo(expectedCities, options =>
+                options.Excluding(o => o.Id));
         }
 
         [Test]
@@ -76,9 +74,7 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var addedCity = await _cityRepository.Find(city.Id);
 
-            addedCity.Should().NotBeNull();
-            addedCity.Name.Should().Be(city.Name);
-            addedCity.Country.Should().Be(city.Country);
+            addedCity.Should().BeEquivalentTo(city);
         }
 
         [Test]
@@ -93,9 +89,7 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var updatedCity = await _cityRepository.Find(city.Id);
 
-            updatedCity.Should().NotBeNull();
-            updatedCity.Name.Should().Be(city.Name);
-            updatedCity.Country.Should().Be(city.Country);
+            updatedCity.Should().BeEquivalentTo(city);
         }
 
         [Test]
@@ -119,6 +113,6 @@ namespace EventTicketingSystem.Tests.DataAccess
             Assert.DoesNotThrowAsync(async () => await _cityRepository.Delete(100));
             Assert.DoesNotThrowAsync(async () => await _cityRepository.SaveChanges());
         }
-    
+
     }
 }

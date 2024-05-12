@@ -41,12 +41,11 @@ namespace EventTicketingSystem.Tests.DataAccess
         {
             var users = await _dataProvider.GetUsers();
             var expectedUser = users[0];
-            var user = await _userRepository.Find(1);
+            expectedUser.Id = 1;
+            var user = await _userRepository.Find(expectedUser.Id);
 
-            user.Should().NotBeNull();
-            user.Id.Should().Be(1);
-            user.Name.Should().Be(expectedUser.Name);
-            user.Username.Should().Be(expectedUser.Username);
+            user.Should().BeEquivalentTo(expectedUser, options =>
+                options.Excluding(o => o.Created));
         }
 
         [Test]
@@ -55,14 +54,8 @@ namespace EventTicketingSystem.Tests.DataAccess
             var expectedUsers = await _dataProvider.GetUsers();
             var users = (await _userRepository.GetUsers()).ToList();
 
-            users.Should().NotBeNull();
-            users.Should().HaveCount(expectedUsers.Count);
-            for (int i = 0; i < users.Count; i++)
-            {
-                users[i].Name.Should().Be(expectedUsers[i].Name);
-                users[i].Username.Should().Be(expectedUsers[i].Username);
-                users[i].Email.Should().Be(expectedUsers[i].Email);
-            }
+            users.Should().BeEquivalentTo(expectedUsers, options =>
+                options.Excluding(o => o.Id).Excluding(o => o.Created));
         }
 
         [Test]
@@ -80,10 +73,8 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var addedUser = await _userRepository.Find(user.Id);
 
-            addedUser.Should().NotBeNull();
-            addedUser.Name.Should().Be(user.Name);
-            addedUser.Username.Should().Be(user.Username);
-            addedUser.Email.Should().Be(user.Email);
+            addedUser.Should().BeEquivalentTo(user, options =>
+                options.Excluding(o => o.Id).Excluding(o => o.Created));
         }
 
         [Test]
@@ -98,9 +89,8 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             var updatedUser = await _userRepository.Find(user.Id);
 
-            updatedUser.Should().NotBeNull();
-            updatedUser.Name.Should().Be(user.Name);
-            updatedUser.Username.Should().Be(user.Username);
+            updatedUser.Should().BeEquivalentTo(user, options =>
+                options.Excluding(o => o.Id).Excluding(o => o.Created));
         }
 
         [Test]
@@ -132,11 +122,8 @@ namespace EventTicketingSystem.Tests.DataAccess
             var expectedUser = users[0];
             var user = await _userRepository.GetUserByUsername(expectedUser.Username);
 
-            user.Should().NotBeNull();
-            user.Id.Should().Be(1);
-            user.Name.Should().Be(expectedUser.Name);
-            user.Username.Should().Be(expectedUser.Username);
-            user.Email.Should().Be(expectedUser.Email);
+            user.Should().BeEquivalentTo(expectedUser, options =>
+                options.Excluding(o => o.Id).Excluding(o => o.Created));
         }
 
         [Test]

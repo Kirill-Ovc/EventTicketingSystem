@@ -1,7 +1,5 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 namespace EventTicketingSystem.Tests.Seed
@@ -30,6 +28,7 @@ namespace EventTicketingSystem.Tests.Seed
             {
                 new Venue
                 {
+                    Id = 1,
                     Name = "Tinkoff Arena",
                     CityId = 2,
                     Address = "Primorsky prospect, St. Petersburg, Russia",
@@ -37,6 +36,7 @@ namespace EventTicketingSystem.Tests.Seed
                 },
                 new Venue
                 {
+                    Id = 2,
                     Name = "Red square",
                     CityId = 1,
                     Address = "Red square, Moscow, Russia",
@@ -44,6 +44,7 @@ namespace EventTicketingSystem.Tests.Seed
                 },
                 new Venue
                 {
+                    Id = 3,
                     Name = "Antalya Expo Kongre Merkezi",
                     CityId = 3,
                     Address = "Solak, 07112 Aksu/Antalya, Türkiye",
@@ -51,6 +52,7 @@ namespace EventTicketingSystem.Tests.Seed
                 },
                 new Venue
                 {
+                    Id = 4,
                     Name = "Moscone Center",
                     CityId = 4,
                     Address = "San Francisco, California, United States",
@@ -84,7 +86,7 @@ namespace EventTicketingSystem.Tests.Seed
                 VenueId = venueId,
                 Name = "Section C",
                 Capacity = 100,
-                Seats = GetSeatsForSection(venueId, 3,10, "C").ToList()
+                Seats = GetSeatsForSection(venueId, 3, 10, "C").ToList()
             };
             return new List<Section> { sectionA, sectionB, sectionC };
         }
