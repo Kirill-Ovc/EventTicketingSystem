@@ -113,6 +113,5 @@ namespace EventTicketingSystem.Tests.DataAccess
             Assert.DoesNotThrowAsync(async () => await _cityRepository.Delete(100));
             Assert.DoesNotThrowAsync(async () => await _cityRepository.SaveChanges());
         }
-
     }
 }

@@ -5,7 +5,6 @@ using EventTicketingSystem.DataAccess.Services;
 using EventTicketingSystem.Tests.Helpers;
 using EventTicketingSystem.Tests.Seed;
 using FluentAssertions;
-using System;
 
 namespace EventTicketingSystem.Tests.DataAccess
 {

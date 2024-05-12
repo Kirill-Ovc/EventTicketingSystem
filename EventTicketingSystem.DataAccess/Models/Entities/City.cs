@@ -1,6 +1,8 @@
-﻿namespace EventTicketingSystem.DataAccess.Models.Entities
+﻿using EventTicketingSystem.DataAccess.Interfaces;
+
+namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    public class City
+    public class City : IEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
