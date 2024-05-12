@@ -41,7 +41,7 @@ namespace EventTicketingSystem.Tests.DataAccess
         {
             var expectedCity = new City
             {
-                Id = 1,
+                Id = 2,
                 Name = "Moscow",
                 Country = "Russia"
             };

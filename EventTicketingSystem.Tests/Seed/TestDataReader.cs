@@ -30,7 +30,7 @@ namespace EventTicketingSystem.Tests.Seed
                 {
                     Id = 1,
                     Name = "Tinkoff Arena",
-                    CityId = 2,
+                    CityId = 1,
                     Address = "Primorsky prospect, St. Petersburg, Russia",
                     Information = "Concert hall"
                 },
@@ -38,7 +38,7 @@ namespace EventTicketingSystem.Tests.Seed
                 {
                     Id = 2,
                     Name = "Red square",
-                    CityId = 1,
+                    CityId = 2,
                     Address = "Red square, Moscow, Russia",
                     Information = "Red square"
                 },
