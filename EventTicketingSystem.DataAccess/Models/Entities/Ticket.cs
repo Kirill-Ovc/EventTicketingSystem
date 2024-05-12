@@ -1,8 +1,9 @@
-﻿using EventTicketingSystem.DataAccess.Models.Enums;
+﻿using EventTicketingSystem.DataAccess.Interfaces;
+using EventTicketingSystem.DataAccess.Models.Enums;
 
 namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    internal class Ticket
+    internal class Ticket : IEntity
     {
         public int Id { get; set; }
         public int EventSeatId { get; set; }

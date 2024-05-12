@@ -6,43 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTicketingSystem.DataAccess.Services
 {
-    internal class BookingRepository : IBookingRepository
+    internal class BookingRepository : BaseRepository<Booking>, IBookingRepository
     {
         private readonly DatabaseContext _context;
 
-        public BookingRepository(DatabaseContext context)
+        public BookingRepository(DatabaseContext context) : base(context)
         {
             _context = context;
-        }
-
-        public async Task<Booking> Find(int id)
-        {
-            return await _context.Bookings.FindAsync(id);
-        }
-
-        public async Task Add(Booking booking)
-        {
-            await _context.AddAsync(booking);
-        }
-
-        public Task Update(Booking booking)
-        {
-            _context.Bookings.Update(booking);
-            return Task.CompletedTask;
-        }
-
-        public async Task Delete(int id)
-        {
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking != null)
-            {
-                _context.Bookings.Remove(booking);
-            }
-        }
-
-        public async Task SaveChanges()
-        {
-            await _context.SaveChangesAsync();
         }
 
         public async Task<ICollection<Booking>> GetByUserId(int userId)

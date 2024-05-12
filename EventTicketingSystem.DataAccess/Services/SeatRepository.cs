@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTicketingSystem.DataAccess.Services
 {
-    internal class SeatRepository : ISeatRepository
+    internal class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
         private readonly DatabaseContext _context;
 
-        public SeatRepository(DatabaseContext context)
+        public SeatRepository(DatabaseContext context) : base(context)
         {
             _context = context;
         }
@@ -66,40 +66,6 @@ namespace EventTicketingSystem.DataAccess.Services
             entity.Name = eventSeat.Name;
             entity.Status = eventSeat.Status;
             _context.EventSeats.Update(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<Seat> Find(int id)
-        {
-            return await _context.Seats.FindAsync(id);
-        }
-
-        public async Task Add(Seat seat)
-        {
-            await _context.Seats.AddAsync(seat);
-        }
-
-        public async Task Update(Seat seat)
-        {
-            var entity = await _context.Venues.FindAsync(seat.Id);
-            if (entity == null)
-            {
-                throw new InvalidOperationException("Update failed. Can't find entity by Id");
-            }
-            _context.Seats.Update(seat);
-        }
-
-        public async Task Delete(int id)
-        {
-            var seat = await _context.Seats.FindAsync(id);
-            if (seat != null)
-            {
-                _context.Seats.Remove(seat);
-            }
-        }
-
-        public async Task SaveChanges()
-        {
             await _context.SaveChangesAsync();
         }
     }

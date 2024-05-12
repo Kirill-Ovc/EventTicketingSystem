@@ -1,6 +1,8 @@
-﻿namespace EventTicketingSystem.DataAccess.Models.Entities
+﻿using EventTicketingSystem.DataAccess.Interfaces;
+
+namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    public class Section
+    public class Section : IEntity
     {
         public int Id { get; set; }
         public int VenueId { get; set; }

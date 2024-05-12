@@ -1,8 +1,9 @@
-﻿using EventTicketingSystem.DataAccess.Models.Enums;
+﻿using EventTicketingSystem.DataAccess.Interfaces;
+using EventTicketingSystem.DataAccess.Models.Enums;
 
 namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    internal class Payment
+    internal class Payment : IEntity
     {
         public int Id { get; set; }
         public int BookingId { get; set; }

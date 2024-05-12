@@ -5,21 +5,31 @@ using EventInfo = EventTicketingSystem.DataAccess.Models.Entities.EventInfo;
 
 namespace EventTicketingSystem.DataAccess.Services
 {
-    internal class EventInfoRepository : IEventInfoRepository
+    internal class EventInfoRepository : BaseRepository<EventInfo>, IEventInfoRepository
     {
         private readonly DatabaseContext _context;
 
-        public EventInfoRepository(DatabaseContext context)
+        public EventInfoRepository(DatabaseContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task<EventInfo> Find(int id)
+        public override async Task<EventInfo> Find(int id)
         {
             return await _context.EventInfos
                 .Include(e => e.EventOccurrences)
                 .SingleOrDefaultAsync(e => e.Id == id);
 
+        }
+
+        public override async Task Delete(int id)
+        {
+            var eventInfo = await _context.EventInfos.FindAsync(id);
+            if (eventInfo != null)
+            {
+                _context.RemoveRange(eventInfo.EventOccurrences);
+                _context.EventInfos.Remove(eventInfo);
+            }
         }
 
         public async Task<ICollection<EventInfo>> GetEvents()
@@ -47,32 +57,6 @@ namespace EventTicketingSystem.DataAccess.Services
                 .ToListAsync();
 
             return await _context.EventInfos.Where(e => eventIds.Contains(e.Id)).ToListAsync();
-        }
-
-        public async Task Add(EventInfo eventInfo)
-        {
-            await _context.AddAsync(eventInfo);
-        }
-
-        public Task Update(EventInfo eventInfo)
-        {
-            _context.EventInfos.Update(eventInfo);
-            return Task.CompletedTask;
-        }
-
-        public async Task Delete(int id)
-        {
-            var eventInfo = await _context.EventInfos.FindAsync(id);
-            if (eventInfo != null)
-            {
-                _context.RemoveRange(eventInfo.EventOccurrences);
-                _context.EventInfos.Remove(eventInfo);
-            }
-        }
-
-        public async Task SaveChanges()
-        {
-            await _context.SaveChangesAsync();
         }
     }
 }

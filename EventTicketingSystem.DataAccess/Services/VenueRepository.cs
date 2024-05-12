@@ -5,47 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventTicketingSystem.DataAccess.Services
 {
-    internal class VenueRepository : IVenueRepository
+    internal class VenueRepository : BaseRepository<Venue>, IVenueRepository
     {
         private readonly DatabaseContext _context;
 
-        public VenueRepository(DatabaseContext context)
+        public VenueRepository(DatabaseContext context) : base(context)
         {
             _context = context;
-        }
-
-        public async Task<Venue> Find(int id)
-        {
-            return await _context.Venues.FindAsync(id);
-        }
-
-        public async Task Add(Venue venue)
-        {
-            await _context.Venues.AddAsync(venue);
-        }
-
-        public async Task Update(Venue venue)
-        {
-            var entity = await _context.Venues.FindAsync(venue.Id);
-            if (entity == null)
-            {
-                throw new InvalidOperationException("Update failed. Can't find entity by Id");
-            }
-            _context.Venues.Update(venue);
-        }
-
-        public async Task Delete(int id)
-        {
-            var venue = await _context.Venues.FindAsync(id);
-            if (venue != null)
-            {
-                _context.Venues.Remove(venue);
-            }
-        }
-
-        public async Task SaveChanges()
-        {
-            await _context.SaveChangesAsync();
         }
 
         public async Task<ICollection<Venue>> GetVenues()
