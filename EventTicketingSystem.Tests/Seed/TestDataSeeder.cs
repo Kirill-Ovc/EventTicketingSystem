@@ -68,6 +68,30 @@ namespace EventTicketingSystem.Tests.Seed
             await SeedEntities(eventSeats);
         }
 
+        public async Task SeedBookings()
+        {
+            if (await _context.Bookings.AnyAsync()) return;
+
+            var bookings = _dataProvider.GetBookings();
+            await SeedEntities(bookings);
+        }
+
+        public async Task SeedPayments()
+        {
+            if (await _context.Payments.AnyAsync()) return;
+
+            var payments = _dataProvider.GetPayments();
+            await SeedEntities(payments);
+        }
+
+        public async Task SeedTickets()
+        {
+            if (await _context.Tickets.AnyAsync()) return;
+
+            var tickets = _dataProvider.GetTickets();
+            await SeedEntities(tickets);
+        }
+
         private async Task SeedEntities<T>(IEnumerable<T> entities) where T : class
         {
             await _context.AddRangeAsync(entities);

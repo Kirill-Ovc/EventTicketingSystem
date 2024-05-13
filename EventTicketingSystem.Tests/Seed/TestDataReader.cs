@@ -1,5 +1,6 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
+using System;
 using System.Text.Json;
 
 namespace EventTicketingSystem.Tests.Seed
@@ -202,6 +203,89 @@ namespace EventTicketingSystem.Tests.Seed
                 eventSeats.Add(eventSeat);
             }
             return eventSeats;
+        }
+
+        public List<Booking> GetBookings()
+        {
+            var bookings = new List<Booking>();
+            for (int i = 1; i <= 5; i++)
+            {
+                var booking = new Booking
+                {
+                    UserId = i,
+                    EventSeatId = 20 + i,
+                    Status = BookingStatus.Active,
+                    ExpirationTimeStamp = DateTime.Today.AddDays(1),
+                    Price = 1000
+                };
+                bookings.Add(booking);
+            }
+            for (int i = 1; i <= 5; i++)
+            {
+                var booking = new Booking
+                {
+                    UserId = i,
+                    EventSeatId = 10 + i,
+                    Status = BookingStatus.Expired,
+                    ExpirationTimeStamp = DateTime.Today.AddDays(-1),
+                    Price = 900
+                };
+                bookings.Add(booking);
+            }
+
+            return bookings;
+        }
+
+        public List<Payment> GetPayments()
+        {
+            var payments = new List<Payment>();
+            for (int i = 1; i <= 5; i++)
+            {
+                var payment = new Payment
+                {
+                    Id = i,
+                    BookingId = i,
+                    Amount = 1000,
+                    PaymentStatus = PaymentStatus.Paid,
+                    PaymentDate = DateTime.Today,
+                    PaymentMethod = PaymentMethod.CreditCard
+                    
+                };
+                payments.Add(payment);
+            }
+            for (int i = 1; i <= 5; i++)
+            {
+                var payment = new Payment
+                {
+                    Id = 5 + i,
+                    BookingId = 5 + i,
+                    Amount = 2000,
+                    PaymentStatus = PaymentStatus.Pending
+                };
+                payments.Add(payment);
+            }
+
+            return payments;
+        }
+
+        public List<Ticket> GetTickets()
+        {
+            var tickets = new List<Ticket>();
+            for (int i = 1; i <= 5; i++)
+            {
+                var ticket = new Ticket
+                {
+                    Id = i,
+                    EventSeatId = 10 + i,
+                    UserId = i,
+                    Price = 1000,
+                    Status = TicketStatus.Active,
+                    TicketLevel = TicketLevel.Adult
+                };
+                tickets.Add(ticket);
+            }
+
+            return tickets;
         }
     }
 }

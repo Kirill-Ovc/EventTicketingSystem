@@ -73,15 +73,6 @@ namespace EventTicketingSystem.Tests.DataAccess
             events.Should().BeEquivalentTo(expectedEvents, ExcludeProperties);
         }
 
-
-        private EquivalencyAssertionOptions<EventInfo> ExcludeProperties(EquivalencyAssertionOptions<EventInfo> options)
-        {
-            options.For(o => o.EventOccurrences).Exclude(o => o.Venue);
-            options.For(o => o.EventOccurrences).Exclude(o => o.EventInfo);
-            options.For(o => o.EventOccurrences).Exclude(o => o.Id);
-            return options;
-        }
-
         [Test]
         public async Task EventInfoRepository_GetEventsByCity_ReturnsEvents()
         {
@@ -101,6 +92,14 @@ namespace EventTicketingSystem.Tests.DataAccess
 
             events.Should().ContainSingle();
             events.First().Should().BeEquivalentTo(expectedEvent, ExcludeProperties);
+        }
+
+        private EquivalencyAssertionOptions<EventInfo> ExcludeProperties(EquivalencyAssertionOptions<EventInfo> options)
+        {
+            options.For(o => o.EventOccurrences).Exclude(o => o.Venue);
+            options.For(o => o.EventOccurrences).Exclude(o => o.EventInfo);
+            options.For(o => o.EventOccurrences).Exclude(o => o.Id);
+            return options;
         }
     }
 }
