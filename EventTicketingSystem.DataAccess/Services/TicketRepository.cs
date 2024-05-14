@@ -21,10 +21,10 @@ namespace EventTicketingSystem.DataAccess.Services
         public async Task<List<TicketDto>> GetTickets(int userId)
         {
             var tickets = await _context.Tickets
+                .Where(t => t.UserId == userId)
                 .Include(t => t.EventSeat).ThenInclude(es => es.Event)
                 .Include(t => t.EventSeat).ThenInclude(es => es.Seat)
                 .ThenInclude(s => s.Section)
-                .Where(t => t.UserId == userId)
                 .ToListAsync();
             var ticketDtos = _mapper.Map<List<TicketDto>>(tickets);
             return ticketDtos;
