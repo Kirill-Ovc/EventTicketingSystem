@@ -1,0 +1,34 @@
+[
+  {
+    "Name": "Saint Petersburg",
+    "Country": "Russia"
+  },
+  {
+    "Name": "Moscow",
+    "Country": "Russia"
+  },
+  {
+    "Name": "Antalya",
+    "Country": "Turkey"
+  },
+  {
+    "Name": "Istanbul",
+    "Country": "Turkey"
+  },
+  {
+    "Name": "Ankara",
+    "Country": "Turkey"
+  },
+  {
+    "Name": "London",
+    "Country": "United Kingdom"
+  },
+  {
+    "Name": "Berlin",
+    "Country": "Germany"
+  },
+  {
+    "Name": "New York",
+    "Country": "USA"
+  }
+]
