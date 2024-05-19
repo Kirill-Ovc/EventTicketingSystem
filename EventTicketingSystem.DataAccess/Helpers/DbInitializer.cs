@@ -3,7 +3,7 @@ using EventTicketingSystem.DataAccess.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
-namespace EventTicketingSystem.DataAccess.Seed
+namespace EventTicketingSystem.DataAccess.Helpers
 {
     /// <summary>
     /// Helper class to seed the database with initial data
@@ -30,7 +30,7 @@ namespace EventTicketingSystem.DataAccess.Seed
         {
             if (await context.Cities.AnyAsync()) return;
 
-            var cityData = await File.ReadAllTextAsync("Seed/Data/CitySeedData.json");
+            var cityData = Resources.SeedData.CitySeedData;
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var cities = JsonSerializer.Deserialize<List<City>>(cityData, options);
 

@@ -1,6 +1,5 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
-using System;
 using System.Text.Json;
 
 namespace EventTicketingSystem.Tests.Seed

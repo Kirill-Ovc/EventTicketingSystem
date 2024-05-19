@@ -1,10 +1,11 @@
 [
   {
-    "Name": "Moscow",
-    "Country": "Russia"
+    "Name": "Saint Petersburg",
+    "Country": "Russia",
+    "PhotoUrl": "https://shorturl.at/6Bfk8"
   },
   {
-    "Name": "Saint Petersburg",
+    "Name": "Moscow",
     "Country": "Russia"
   },
   {
@@ -29,6 +30,16 @@
   },
   {
     "Name": "New York",
+    "Country": "USA"
+  },
+  {
+    "Name": "Los Angeles",
+    "Description": "California",
+    "Country": "USA"
+  },
+  {
+    "Name": "San Francisco",
+    "Description": "California",
     "Country": "USA"
   }
 ]

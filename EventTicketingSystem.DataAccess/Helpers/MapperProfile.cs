@@ -4,9 +4,9 @@ using EventTicketingSystem.DataAccess.Models.Entities;
 
 namespace EventTicketingSystem.DataAccess.Helpers
 {
-    internal class AutoMapperProfiles : Profile
+    internal class MapperProfile : Profile
     {
-        public AutoMapperProfiles()
+        public MapperProfile()
         {
             CreateMap<Ticket, TicketDto>()
                 .ForMember(dest => dest.EventName, opt =>
