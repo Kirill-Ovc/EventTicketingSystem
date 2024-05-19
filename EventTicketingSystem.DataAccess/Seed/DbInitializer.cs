@@ -58,7 +58,15 @@ namespace EventTicketingSystem.DataAccess.Seed
                     Name = "Test User",
                     Password = "password",
                     Email = "test@email"
-                }
+                },
+                new()
+                {
+                    Id = 3,
+                    Username = "Kirill1",
+                    Name = "Kirill O",
+                    Password = "password",
+                    Email = "kirill@email"
+                },
             };
 
             await context.AddRangeAsync(users);

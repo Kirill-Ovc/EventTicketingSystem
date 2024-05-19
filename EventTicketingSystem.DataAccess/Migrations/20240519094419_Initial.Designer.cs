@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventTicketingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240421200344_Initial")]
+    [Migration("20240519094419_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,10 @@ namespace EventTicketingSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EventSeatId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Bookings");
                 });
 
@@ -77,13 +81,13 @@ namespace EventTicketingSystem.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("DataAndTime")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("EventInfoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Time")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VenueId")
@@ -171,6 +175,10 @@ namespace EventTicketingSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("SectionId");
+
                     b.ToTable("Offers");
                 });
 
@@ -189,13 +197,15 @@ namespace EventTicketingSystem.DataAccess.Migrations
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PaymentMethod")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("PaymentStatus")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
 
                     b.ToTable("Payments");
                 });
@@ -231,6 +241,8 @@ namespace EventTicketingSystem.DataAccess.Migrations
 
                     b.HasIndex("SectionId");
 
+                    b.HasIndex("VenueId");
+
                     b.ToTable("Seats");
                 });
 
@@ -263,6 +275,8 @@ namespace EventTicketingSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("VenueId");
+
                     b.ToTable("Sections");
                 });
 
@@ -293,6 +307,8 @@ namespace EventTicketingSystem.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EventSeatId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
                 });
@@ -361,7 +377,28 @@ namespace EventTicketingSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.ToTable("Venues");
+                });
+
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Booking", b =>
+                {
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.EventSeat", "EventSeat")
+                        .WithMany()
+                        .HasForeignKey("EventSeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventSeat");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Event", b =>
@@ -402,15 +439,64 @@ namespace EventTicketingSystem.DataAccess.Migrations
                     b.Navigation("Seat");
                 });
 
-            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Seat", b =>
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Offer", b =>
                 {
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.Section", "Section")
                         .WithMany()
                         .HasForeignKey("SectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Event");
+
                     b.Navigation("Section");
+                });
+
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Payment", b =>
+                {
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Seat", b =>
+                {
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.Section", "Section")
+                        .WithMany("Seats")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.Venue", "Venue")
+                        .WithMany()
+                        .HasForeignKey("VenueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Section");
+
+                    b.Navigation("Venue");
+                });
+
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Section", b =>
+                {
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.Venue", "Venue")
+                        .WithMany()
+                        .HasForeignKey("VenueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Venue");
                 });
 
             modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Ticket", b =>
@@ -421,12 +507,36 @@ namespace EventTicketingSystem.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("EventSeat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Venue", b =>
+                {
+                    b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.EventInfo", b =>
                 {
                     b.Navigation("EventOccurrences");
+                });
+
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Section", b =>
+                {
+                    b.Navigation("Seats");
                 });
 #pragma warning restore 612, 618
         }
