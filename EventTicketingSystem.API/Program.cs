@@ -1,7 +1,5 @@
 using EventTicketingSystem.API.Extensions;
 using EventTicketingSystem.API.Helpers;
-using EventTicketingSystem.API.Interfaces;
-using EventTicketingSystem.API.Services;
 using EventTicketingSystem.API.Swagger;
 using EventTicketingSystem.DataAccess.Extensions;
 using Microsoft.Extensions.Options;
@@ -14,11 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddBusinessServices();
 builder.Services.AddDataAccess(builder.Configuration);
 
 var app = builder.Build();
