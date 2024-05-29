@@ -96,7 +96,7 @@ namespace EventTicketingSystem.API.Services
 
             booking.Status = BookingStatus.Active;
             booking.Price = await _bookingSeatRepository.GetTotalPrice(booking.Id);
-            await _bookingSeatRepository.BookSeats(booking.Id);
+            await _bookingSeatRepository.UpdateSeatsStatus(booking.Id, EventSeatStatus.Booked);
 
             var newPayment = new Payment()
             {
@@ -142,7 +142,7 @@ namespace EventTicketingSystem.API.Services
             {
                 CartId = booking.Uuid,
                 UserId = booking.UserId,
-                Status = booking.Status,
+                Status = booking.Status.ToString(),
                 ExpirationTimeStamp = booking.ExpirationTimeStamp,
                 CartItems = new List<CartItem>()
             };

@@ -60,7 +60,7 @@ namespace EventTicketingSystem.DataAccess.Services
             return _context.BookingSeats.FirstOrDefaultAsync(bs => bs.EventSeatId == eventSeatId);
         }
 
-        public async Task BookSeats(int bookingId)
+        public async Task UpdateSeatsStatus(int bookingId, EventSeatStatus status)
         {
             var seats = await _context.BookingSeats
                 .Include(bs => bs.EventSeat)
@@ -70,7 +70,7 @@ namespace EventTicketingSystem.DataAccess.Services
 
             foreach (var seat in seats)
             {
-                seat.Status = EventSeatStatus.Booked;
+                seat.Status = status;
             }
 
             await _context.SaveChangesAsync();

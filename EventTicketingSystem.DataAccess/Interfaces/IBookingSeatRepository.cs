@@ -1,4 +1,5 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Entities;
+using EventTicketingSystem.DataAccess.Models.Enums;
 
 namespace EventTicketingSystem.DataAccess.Interfaces;
 
@@ -8,6 +9,6 @@ public interface IBookingSeatRepository
     Task AddSeat(int bookingId, int eventSeatId, int offerId);
     Task DeleteSeat(int bookingId, int eventSeatId);
     Task<BookingSeat> GetSeat(int eventSeatId);
-    Task BookSeats(int bookingId);
+    Task UpdateSeatsStatus(int bookingId, EventSeatStatus status);
     Task<decimal> GetTotalPrice(int bookingId);
 }
