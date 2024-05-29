@@ -1,6 +1,6 @@
 ﻿namespace EventTicketingSystem.DataAccess.Models.Enums
 {
-    internal enum PaymentStatus
+    public enum PaymentStatus
     {
         Pending = 0,
         Paid = 1,

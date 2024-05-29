@@ -21,7 +21,7 @@ namespace EventTicketingSystem.API.Controllers
             return Ok(events);
         }
 
-        [HttpGet("{city_id}")]
+        [HttpGet("{cityId}")]
         public async Task<IActionResult> GetByCity(int cityId)
         {
             if (cityId == default)
@@ -32,7 +32,7 @@ namespace EventTicketingSystem.API.Controllers
             return Ok(events);
         }
 
-        [HttpGet("events/{event_id}/sections/{section_id}/seats")]
+        [HttpGet("events/{eventId}/sections/{sectionId}/seats")]
         public async Task<IActionResult> GetSeats(int eventId, int sectionId)
         {
             if (eventId == default || sectionId == default)

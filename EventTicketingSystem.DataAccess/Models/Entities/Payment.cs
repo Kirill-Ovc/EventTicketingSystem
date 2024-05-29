@@ -3,7 +3,7 @@ using EventTicketingSystem.DataAccess.Models.Enums;
 
 namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    internal class Payment : IEntity
+    public class Payment : IEntity
     {
         public int Id { get; set; }
         public int BookingId { get; set; }

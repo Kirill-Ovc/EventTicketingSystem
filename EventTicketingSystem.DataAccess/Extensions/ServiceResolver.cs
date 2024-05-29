@@ -72,6 +72,7 @@ namespace EventTicketingSystem.DataAccess.Extensions
             services.AddScoped<IVenueRepository, VenueRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<IOfferRepository, OfferRepository>();
+            services.AddScoped<IBookingSeatRepository, BookingSeatRepository>();
         }
     }
 }

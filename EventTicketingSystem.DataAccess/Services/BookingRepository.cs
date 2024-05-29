@@ -31,5 +31,11 @@ namespace EventTicketingSystem.DataAccess.Services
                             b.ExpirationTimeStamp > DateTime.UtcNow)
                 .ToListAsync();
         }
+
+        public async Task<Booking> GetByUuid(string uuid)
+        {
+            return await _context.Bookings
+                .FirstOrDefaultAsync(b => b.Uuid == uuid);
+        }
     }
 }

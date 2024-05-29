@@ -1,6 +1,6 @@
 ﻿namespace EventTicketingSystem.DataAccess.Models.Enums
 {
-    internal enum BookingStatus
+    public enum BookingStatus
     {
         Active = 0,
         Paid = 1,

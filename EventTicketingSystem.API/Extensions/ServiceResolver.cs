@@ -9,6 +9,7 @@ namespace EventTicketingSystem.API.Extensions
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IOrderService, OrderService>();
         }
     }
 }

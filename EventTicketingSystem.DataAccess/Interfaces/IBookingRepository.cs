@@ -2,8 +2,9 @@
 
 namespace EventTicketingSystem.DataAccess.Interfaces;
 
-internal interface IBookingRepository : IRepository<Booking>
+public interface IBookingRepository : IRepository<Booking>
 {
     Task<ICollection<Booking>> GetByUserId(int userId);
     Task<ICollection<Booking>> GetActiveBookings();
+    Task<Booking> GetByUuid(string uuid);
 }
