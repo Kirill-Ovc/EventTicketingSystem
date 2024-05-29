@@ -30,7 +30,25 @@ namespace EventTicketingSystem.API.Controllers
         [HttpPost("carts/{cartId}")]
         public async Task<ActionResult<Cart>> AddToCart(string cartId, SeatOrder order)
         {
-            var cart = await _orderService.AddToCart(cartId, order);
+            try
+            {
+                var cart = await _orderService.AddToCart(cartId, order);
+                if (cart == null)
+                {
+                    return NotFound();
+                }
+                return Ok(cart);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("carts/{cartId}/events/{eventId}/seats/{seatId}")]
+        public async Task<ActionResult<Cart>> DeleteSeat(string cartId, int eventId, int seatId)
+        {
+            var cart = await _orderService.RemoveFromCart(cartId, seatId);
             if (cart == null)
             {
                 return NotFound();
@@ -39,18 +57,18 @@ namespace EventTicketingSystem.API.Controllers
             return Ok(cart);
         }
 
-        [HttpDelete("carts/{cartId}/events/{eventId}/seats/{seatId}")]
-        public async Task<ActionResult> DeleteSeat(string cartId, int eventId, int seatId)
-        {
-            await _orderService.RemoveFromCart(cartId, seatId);
-            return Ok();
-        }
-
         [HttpPut("carts/{cartId}/book")]
         public async Task<ActionResult<int>> BookCart(string cartId)
         {
-            var paymentId = await _orderService.CheckoutCart(cartId);
-            return Ok(paymentId);
+            try
+            {
+                var paymentId = await _orderService.CheckoutCart(cartId);
+                return Ok(paymentId);
+            }
+            catch (InvalidOperationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

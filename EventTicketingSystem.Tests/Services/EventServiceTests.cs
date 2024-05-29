@@ -9,7 +9,7 @@ using EventTicketingSystem.DataAccess.Models.Enums;
 using FluentAssertions;
 using NSubstitute;
 
-namespace EventTicketingSystem.Tests.Controllers
+namespace EventTicketingSystem.Tests.Services
 {
     [TestFixture]
     public class EventsServiceTests
@@ -138,7 +138,7 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         #region TestData
-        private static readonly DateTime _testEventDate = new DateTime(2024, 05, 20, 10, 0,0, DateTimeKind.Utc);
+        private static readonly DateTime _testEventDate = new DateTime(2024, 05, 20, 10, 0, 0, DateTimeKind.Utc);
         private static readonly Event _testEvent = new Event
         {
             Id = 1,
@@ -147,7 +147,7 @@ namespace EventTicketingSystem.Tests.Controllers
             VenueId = 2,
             EventInfoId = 1,
             Venue = new Venue()
-                {
+            {
                 Id = 2,
                 Name = "Venue 1"
             },

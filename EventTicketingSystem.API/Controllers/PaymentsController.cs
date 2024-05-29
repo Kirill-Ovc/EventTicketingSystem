@@ -15,12 +15,12 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpGet("{paymentId}")]
-        public async Task<IActionResult> GetStatus(int paymentId)
+        public async Task<ActionResult<string>> GetStatus(int paymentId)
         {
             try
             {
-                var payment = await _paymentService.GetPaymentStatus(paymentId);
-                return Ok(payment.ToString());
+                var paymentStatus = await _paymentService.GetPaymentStatus(paymentId);
+                return Ok(paymentStatus.ToString());
             }
             catch (InvalidOperationException e)
             {
@@ -29,7 +29,7 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpPost("{paymentId}/complete")]
-        public async Task<IActionResult> Complete(int paymentId)
+        public async Task<ActionResult> Complete(int paymentId)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpPost("{paymentId}/failed")]
-        public async Task<IActionResult> Failed(int paymentId)
+        public async Task<ActionResult> Failed(int paymentId)
         {
             try
             {
