@@ -1,5 +1,6 @@
 ﻿using EventTicketingSystem.API.Interfaces;
 using EventTicketingSystem.DataAccess.Interfaces;
+using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
 
 namespace EventTicketingSystem.API.Services
@@ -40,17 +41,12 @@ namespace EventTicketingSystem.API.Services
             if (payment.PaymentStatus == PaymentStatus.Pending)
             {
                 payment.PaymentStatus = PaymentStatus.Paid;
+                payment.PaymentDate = DateTime.UtcNow;
                 await _paymentRepository.Update(payment);
                 await _paymentRepository.SaveChanges();
             }
 
-            var booking = await _bookingRepository.Find(payment.BookingId);
-            if (booking is { Status: BookingStatus.Active } && booking.Price == payment.Amount)
-            {
-                booking.Status = BookingStatus.Paid;
-                await _bookingRepository.Update(booking);
-                await _bookingSeatRepository.UpdateSeatsStatus(booking.Id, EventSeatStatus.Sold);
-            }
+            await UpdateBookingStatus(payment, BookingStatus.Paid, EventSeatStatus.Sold);
 
             return payment.PaymentStatus;
         }
@@ -70,15 +66,28 @@ namespace EventTicketingSystem.API.Services
                 await _paymentRepository.SaveChanges();
             }
 
+            await UpdateBookingStatus(payment, BookingStatus.Cancelled, EventSeatStatus.Available);
+
+            return payment.PaymentStatus;
+        }
+
+        private async Task UpdateBookingStatus(Payment payment, BookingStatus status, EventSeatStatus seatStatus)
+        {
             var booking = await _bookingRepository.Find(payment.BookingId);
             if (booking is { Status: BookingStatus.Active } && booking.Price == payment.Amount)
             {
-                booking.Status = BookingStatus.Paid;
+                booking.Status = status;
                 await _bookingRepository.Update(booking);
-                await _bookingSeatRepository.UpdateSeatsStatus(booking.Id, EventSeatStatus.Sold);
+                await _bookingSeatRepository.UpdateSeatsStatus(booking.Id, seatStatus);
             }
-
-            return payment.PaymentStatus;
+            else if (booking is not { Status: BookingStatus.Active })
+            {
+                throw new InvalidOperationException("No active booking");
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid booking price");
+            }
         }
 
     }
