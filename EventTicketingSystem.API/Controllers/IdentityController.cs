@@ -33,17 +33,17 @@ namespace EventTicketingSystem.API.Controllers
 
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Name, "test"),
-                new(JwtRegisteredClaimNames.Email, "")
+                new(JwtRegisteredClaimNames.Name, "UserName"),
+                new(JwtRegisteredClaimNames.Email, "UserEmail")
             };
 
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
+            var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_tokenLifetime),
-                SigningCredentials = creds,
+                SigningCredentials = credentials,
                 Issuer = _issuer,
                 Audience = _audience
             };

@@ -114,6 +114,7 @@ namespace EventTicketingSystem.Tests.Services
         {
             // Arrange
             var payment = _foundPayment;
+            var expectedMessage = "No active booking found for this payment";
             _paymentRepository.Find(payment.Id).Returns(payment);
             _bookingRepository.Find(payment.BookingId).Returns((Booking)null);
 
@@ -121,7 +122,7 @@ namespace EventTicketingSystem.Tests.Services
             Func<Task> act = async () => await _paymentService.PaymentCompleted(payment.Id);
 
             // Assert
-            await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("No active booking");
+            await act.Should().ThrowAsync<InvalidOperationException>().WithMessage(expectedMessage);
             await _paymentRepository.Received(1).Find(payment.Id);
             await _paymentRepository.Received(1).Update(Arg.Any<Payment>());
             await _bookingRepository.Received(1).Find(payment.BookingId);
@@ -168,6 +169,22 @@ namespace EventTicketingSystem.Tests.Services
             await _bookingRepository.Received(1).Find(booking.Id);
             await _bookingRepository.Received(1).Update(Arg.Is<Booking>(b => b.Status == BookingStatus.Cancelled));
             await _bookingSeatRepository.Received(1).UpdateSeatsStatus(booking.Id, EventSeatStatus.Available);
+        }
+
+        [Test]
+        public async Task PaymentFailed_WithInvalidPaymentId_ThrowsException()
+        {
+            // Arrange
+            var paymentId = 1;
+            _paymentRepository.Find(paymentId).Returns((Payment)null);
+
+            // Act
+            Func<Task> act = async () => await _paymentService.PaymentFailed(paymentId);
+
+            // Assert
+            await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Payment not found");
+            await _paymentRepository.Received(1).Find(paymentId);
+            await _paymentRepository.DidNotReceive().Update(Arg.Any<Payment>());
         }
     }
 }

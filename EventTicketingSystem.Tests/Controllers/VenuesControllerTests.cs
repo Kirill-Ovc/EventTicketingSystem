@@ -86,35 +86,41 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         [Test]
-        public async Task VenuesController_GetSections_WhenVenueIdIsZero_ReturnsBadRequest()
+        public async Task VenuesController_GetSections_WhenVenueIdIsZero_ReturnsSections()
         {
             // Arrange
             var venueId = 0;
+            var sections = _fixture.CreateMany<Section>(5).ToList();
+            _seatRepository.GetSections(venueId).Returns(sections);
 
             // Act
-            var response = await _controller.GetSections(venueId);
-            var badRequestResult = response as BadRequestObjectResult;
+            var result = await _controller.GetSections(venueId);
 
             // Assert
-            Assert.NotNull(badRequestResult);
-            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            badRequestResult.Value.Should().Be("Venue ID is required");
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(sections);
         }
 
         [Test]
-        public async Task VenuesController_GetByCity_WhenCityIdIsZero_ReturnsBadRequest()
+        public async Task VenuesController_GetSections_WhenVenueIdIsNull_ReturnsBadRequest()
         {
-            // Arrange
-            var cityId = 0;
-
             // Act
-            var response = await _controller.GetByCity(cityId);
-            var badRequestResult = response as BadRequestObjectResult;
+            var result = await _controller.GetSections(null);
 
             // Assert
-            Assert.NotNull(badRequestResult);
-            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            badRequestResult.Value.Should().Be("City ID is required");
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Venue ID is required");
+        }
+
+        [Test]
+        public async Task VenuesController_GetByCity_WhenCityIdIsNull_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.GetByCity(null);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("City ID is required");
         }
     }
 }

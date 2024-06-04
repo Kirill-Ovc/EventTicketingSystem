@@ -22,15 +22,9 @@ namespace EventTicketingSystem.API.Controllers
                 return BadRequest("Payment ID is required");
             }
 
-            try
-            {
-                var paymentStatus = await _paymentService.GetPaymentStatus(paymentId.Value);
-                return Ok(paymentStatus.ToString());
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+            var paymentStatus = await _paymentService.GetPaymentStatus(paymentId.Value);
+
+            return Ok(paymentStatus.ToString());
         }
 
         [HttpPost("{paymentId}/complete")]
@@ -41,15 +35,9 @@ namespace EventTicketingSystem.API.Controllers
                 return BadRequest("Payment ID is required");
             }
 
-            try
-            {
-                await _paymentService.PaymentCompleted(paymentId.Value);
-                return Ok();
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+            await _paymentService.PaymentCompleted(paymentId.Value);
+
+            return Ok();
         }
 
         [HttpPost("{paymentId}/failed")]
@@ -60,15 +48,9 @@ namespace EventTicketingSystem.API.Controllers
                 return BadRequest("Payment ID is required");
             }
 
-            try
-            {
-                await _paymentService.PaymentFailed(paymentId.Value);
-                return Ok();
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+            await _paymentService.PaymentFailed(paymentId.Value);
+
+            return Ok();
         }
     }
 }

@@ -162,7 +162,7 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         [Test]
-        public async Task BookCart_WithException_ReturnsInternalServerError()
+        public void BookCart_WithException_ReturnsInternalServerError()
         {
             // Arrange
             var cartId = "cartId";
@@ -170,14 +170,7 @@ namespace EventTicketingSystem.Tests.Controllers
             _orderService.CheckoutCart(cartId).ThrowsAsync(x => throw new InvalidOperationException(errorMessage));
 
             // Act
-            var result = await _controller.BookCart(cartId);
-
-            // Assert
-            result.Should().BeOfType<ObjectResult>();
-
-            result.As<ObjectResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-            result.As<ObjectResult>().Value.Should().Be(errorMessage);
-            await _orderService.Received(1).CheckoutCart(cartId);
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await _controller.BookCart(cartId));
         }
     }
 }

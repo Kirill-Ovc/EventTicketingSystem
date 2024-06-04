@@ -81,40 +81,42 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         [Test]
-        public async Task EventsController_GetSeats_ReturnsBadRequest()
+        public async Task EventsController_GetSeats_NullParams_ReturnsBadRequest()
         {
-            // Arrange
-            var eventId = 1;
-            var sectionId = 1;
-            var seats = _fixture.CreateMany<EventSeatDto>(100).ToList();
-            _eventService.GetEventSeats(eventId, sectionId).Returns(seats);
-
             // Act
-            var response = await _controller.GetSeats(0, 0);
-            var badRequestResult = response as BadRequestObjectResult;
+            var result = await _controller.GetSeats(null, null);
 
             // Assert
-            Assert.NotNull(badRequestResult);
-            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            await _eventService.DidNotReceive().GetEventSeats(0, 0);
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Event ID and Section ID are required");
+            await _eventService.DidNotReceive().GetEventSeats(Arg.Any<int>(), Arg.Any<int>());
         }
 
         [Test]
-        public async Task EventsController_GetByCity_ReturnsBadRequest()
+        public async Task EventsController_GetByCity_CityIdZero_ReturnsEvents()
         {
             // Arrange
-            var city = _fixture.Create<int>();
+            var cityId = 0;
             var events = _fixture.CreateMany<EventDto>(5).ToList();
-            _eventService.GetEventsByCity(city).Returns(events);
+            _eventService.GetEventsByCity(cityId).Returns(events);
 
             // Act
-            var response = await _controller.GetByCity(0);
-            var badRequestResult = response as BadRequestObjectResult;
+            var result = await _controller.GetByCity(cityId);
+            
+            // Assert
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(events);
+        }
+
+        [Test]
+        public async Task EventsController_GetByCity_WhenCityIdIsNull_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.GetByCity(null);
 
             // Assert
-            Assert.NotNull(badRequestResult);
-            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            await _eventService.DidNotReceive().GetEventsByCity(0);
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("City ID is required");
         }
     }
 }

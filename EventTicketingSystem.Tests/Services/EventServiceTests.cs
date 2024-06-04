@@ -1,11 +1,13 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using EventTicketingSystem.API.Exceptions;
 using EventTicketingSystem.API.Helpers;
 using EventTicketingSystem.API.Models;
 using EventTicketingSystem.API.Services;
 using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
+using EventTicketingSystem.DataAccess.Services;
 using FluentAssertions;
 using NSubstitute;
 
@@ -90,6 +92,7 @@ namespace EventTicketingSystem.Tests.Services
             var sectionId = 1;
             var seats = _fixture.CreateMany<EventSeat>(100).ToList();
 
+            _eventRepository.Find(eventId).Returns(_testEvent);
             _seatRepository.GetEventSeats(eventId, sectionId).Returns(seats);
             _offerRepository.GetOffersByEvent(eventId).Returns(_testOffers);
             seats[0] = new EventSeat
@@ -135,6 +138,23 @@ namespace EventTicketingSystem.Tests.Services
             result[0].Should().BeEquivalentTo(expectedSeat);
             await _seatRepository.Received().GetEventSeats(eventId, sectionId);
             await _offerRepository.Received().GetOffersByEvent(eventId);
+        }
+
+        [Test]
+        public async Task EventService_GetSeats_ThrowsEntityNotFoundException()
+        {
+            // Arrange
+            var eventId = 11;
+            var sectionId = 1;
+            _eventRepository.Find(eventId).Returns((Event)null);
+
+            // Act
+            Func<Task> act = async () => await _service.GetEventSeats(eventId, sectionId);
+
+            // Assert
+            await act.Should().ThrowAsync<EntityNotFoundException>();
+            await _seatRepository.DidNotReceive().GetEventSeats(Arg.Any<int>(), Arg.Any<int>());
+            await _offerRepository.DidNotReceive().GetOffersByEvent(Arg.Any<int>());
         }
 
         #region TestData

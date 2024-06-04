@@ -22,7 +22,7 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         [Test]
-        public async Task GetStatus_WithExistingPayment_ReturnsStatus()
+        public async Task GetStatus_ForExistingPayment_ReturnsStatus()
         {
             // Arrange
             var paymentId = 1;
@@ -40,7 +40,7 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         [Test]
-        public async Task GetPayment_WithNonExistingPayment_ReturnsBadRequest()
+        public void GetStatus_ForNonExistingPayment_ThrowsError()
         {
             // Arrange
             var paymentId = 1;
@@ -48,11 +48,21 @@ namespace EventTicketingSystem.Tests.Controllers
             _paymentService.GetPaymentStatus(paymentId).Throws(new InvalidOperationException(errorMessage));
 
             // Act
-            var result = await _controller.GetStatus(paymentId);
+            // Assert
+            Assert.ThrowsAsync<InvalidOperationException>(() => _controller.GetStatus(paymentId));
+        }
+
+        [Test]
+        public async Task GetStatus_WithNullPaymentId_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.GetStatus(null);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Payment ID is required");
         }
+
 
         [Test]
         public async Task PaymentCompleted_WithValidPaymentId_ReturnsOk()
@@ -85,33 +95,25 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         [Test]
-        public async Task PaymentCompleted_WithInvalidPaymentId_ReturnsBadRequest()
+        public async Task PaymentCompleted_WithNullPaymentId_ReturnsBadRequest()
         {
-            // Arrange
-            var paymentId = 1;
-            var errorMessage = "Payment not found";
-            _paymentService.PaymentCompleted(paymentId).Throws(new InvalidOperationException(errorMessage));
-
             // Act
-            var result = await _controller.Complete(paymentId);
+            var result = await _controller.Complete(null);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Payment ID is required");
         }
 
         [Test]
-        public async Task PaymentFailed_WithInvalidPaymentId_ReturnsBadRequest()
+        public async Task PaymentFailed_WithNullPaymentId_ReturnsBadRequest()
         {
-            // Arrange
-            var paymentId = 1;
-            var errorMessage = "Payment not found";
-            _paymentService.PaymentFailed(paymentId).Throws(new InvalidOperationException(errorMessage));
-
             // Act
-            var result = await _controller.Failed(paymentId);
+            var result = await _controller.Failed(null);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Payment ID is required");
         }
     }
 }
