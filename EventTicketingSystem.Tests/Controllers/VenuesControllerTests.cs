@@ -68,7 +68,6 @@ namespace EventTicketingSystem.Tests.Controllers
         }
 
         [Test]
-        //GetSections
         public async Task VenuesController_GetSections_ReturnsSections()
         {
             // Arrange

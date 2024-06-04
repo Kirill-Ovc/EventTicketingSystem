@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventTicketingSystem.API.Exceptions;
 using EventTicketingSystem.API.Interfaces;
 using EventTicketingSystem.API.Models;
 using EventTicketingSystem.DataAccess.Interfaces;
@@ -38,6 +39,12 @@ namespace EventTicketingSystem.API.Services
 
         public async Task<IList<EventSeatDto>> GetEventSeats(int eventId, int sectionId)
         {
+            var checkEvent = await _eventRepository.Find(eventId);
+            if (checkEvent is null)
+            {
+                throw new EntityNotFoundException("Event not found");
+            }
+
             var seats = await _seatRepository.GetEventSeats(eventId, sectionId);
             var offers = await _offerRepository.GetOffersByEvent(eventId);
             var sectionOffers = offers.Where(o => o.SectionId == sectionId).ToList();

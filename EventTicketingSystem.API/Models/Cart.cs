@@ -13,7 +13,7 @@ namespace EventTicketingSystem.API.Models
         {
             get
             {
-                if (CartItems == null)
+                if (CartItems is null)
                 {
                     return 0;
                 }

@@ -8,13 +8,18 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<EntityNotFoundExceptionFilter>();
+        options.Filters.Add<BusinessExceptionFilter>();
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddBusinessServices();
+builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
 
 var app = builder.Build();

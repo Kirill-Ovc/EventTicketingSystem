@@ -24,21 +24,8 @@ namespace EventTicketingSystem.DataAccess.Services
                 .ToListAsync();
         }
 
-        public async Task AddSeat(int bookingId, int eventSeatId, int offerId)
+        public async Task Add(BookingSeat bookingSeat)
         {
-            var offer = await _context.Offers.FindAsync(offerId);
-            if (offer == null)
-            {
-                throw new ArgumentException($"Price offer not found. OfferId = {offerId}");
-            }
-            var bookingSeat = new BookingSeat()
-            {
-                BookingId = bookingId,
-                EventSeatId = eventSeatId,
-                Price = offer.Price,
-                TicketLevel = offer.TicketLevel
-            };
-
             await _context.BookingSeats.AddAsync(bookingSeat);
             await _context.SaveChangesAsync();
         }
@@ -51,8 +38,8 @@ namespace EventTicketingSystem.DataAccess.Services
             if (seat != null)
             {
                 _context.BookingSeats.Remove(seat);
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
         }
 
         public Task<BookingSeat> GetSeat(int eventSeatId)

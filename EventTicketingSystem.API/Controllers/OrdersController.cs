@@ -16,59 +16,55 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpGet("carts/{cartId}")]
-        public async Task<ActionResult<Cart>> GetCart(string cartId)
+        public async Task<IActionResult> GetCart(string cartId)
         {
-            var cart = await _orderService.GetCart(cartId);
-            if (cart == null)
+            if (cartId is null)
             {
-                return NotFound();
+                return BadRequest("Cart ID is required");
             }
+
+            var cart = await _orderService.GetCart(cartId);
 
             return Ok(cart);
         }
 
         [HttpPost("carts/{cartId}")]
-        public async Task<ActionResult<Cart>> AddToCart(string cartId, SeatOrder order)
+        public async Task<IActionResult> AddToCart(string cartId, SeatOrder order)
         {
-            try
+            if (cartId is null || order is null)
             {
-                var cart = await _orderService.AddToCart(cartId, order);
-                if (cart == null)
-                {
-                    return NotFound();
-                }
-                return Ok(cart);
+                return BadRequest("Cart ID and Order are required");
             }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+
+            var cart = await _orderService.AddToCart(cartId, order);
+
+            return Ok(cart);
         }
 
         [HttpDelete("carts/{cartId}/events/{eventId}/seats/{seatId}")]
-        public async Task<ActionResult<Cart>> DeleteSeat(string cartId, int eventId, int seatId)
+        public async Task<IActionResult> DeleteSeat(string cartId, int? eventId, int? seatId)
         {
-            var cart = await _orderService.RemoveFromCart(cartId, seatId);
-            if (cart == null)
+            if (cartId is null || eventId is null || seatId is null)
             {
-                return NotFound();
+                return BadRequest("Cart ID, Event ID and Seat ID are required");
             }
+
+            var cart = await _orderService.RemoveFromCart(cartId, seatId.Value);
 
             return Ok(cart);
         }
 
         [HttpPut("carts/{cartId}/book")]
-        public async Task<ActionResult<int>> BookCart(string cartId)
+        public async Task<IActionResult> BookCart(string cartId)
         {
-            try
+            if (cartId is null)
             {
-                var paymentId = await _orderService.CheckoutCart(cartId);
-                return Ok(paymentId);
+                return BadRequest("Cart ID is required");
             }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+
+            var paymentId = await _orderService.CheckoutCart(cartId);
+
+            return Ok(paymentId);
         }
     }
 }

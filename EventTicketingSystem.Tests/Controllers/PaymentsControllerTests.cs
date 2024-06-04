@@ -31,17 +31,16 @@ namespace EventTicketingSystem.Tests.Controllers
             _paymentService.GetPaymentStatus(paymentId).Returns(paymentStatus);
 
             // Act
-            var response = await _controller.GetStatus(paymentId);
-            var result = response.Result as OkObjectResult;
+            var result = await _controller.GetStatus(paymentId);
 
             // Assert
-            Assert.IsNotNull(result);
-            result.Value.Should().Be(expectedStatus);
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(expectedStatus);
             await _paymentService.Received(1).GetPaymentStatus(paymentId);
         }
 
         [Test]
-        public async Task GetPayment_WithNonExistingPayment_ReturnsNotBadRequest()
+        public async Task GetPayment_WithNonExistingPayment_ReturnsBadRequest()
         {
             // Arrange
             var paymentId = 1;
@@ -52,7 +51,7 @@ namespace EventTicketingSystem.Tests.Controllers
             var result = await _controller.GetStatus(paymentId);
 
             // Assert
-            result.Result.Should().BeOfType<BadRequestObjectResult>();
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
 
         [Test]

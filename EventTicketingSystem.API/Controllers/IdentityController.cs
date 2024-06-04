@@ -3,6 +3,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using EventTicketingSystem.API.Models;
+using Microsoft.Extensions.Options;
 
 namespace EventTicketingSystem.API.Controllers
 {
@@ -11,14 +13,17 @@ namespace EventTicketingSystem.API.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly SymmetricSecurityKey _key;
-        private static readonly TimeSpan _tokenLifetime = TimeSpan.FromHours(10);
-        private const string Issuer = "localhost";
-        private const string Audience = "localhost";
+        private readonly TimeSpan _tokenLifetime;
+        private readonly string _issuer;
+        private readonly string _audience;
 
-        public IdentityController(IConfiguration configuration)
+        public IdentityController(IOptions<JwtSettings> options)
         {
-            var tokenKey = configuration["JwtSettings:SecretKey"];
+            var tokenKey = options.Value.SecretKey;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
+            _issuer = options.Value.Issuer;
+            _audience = options.Value.Audience;
+            _tokenLifetime = TimeSpan.FromHours(options.Value.TokenExpirationHours);
         }
 
         [HttpPost("token")]
@@ -39,8 +44,8 @@ namespace EventTicketingSystem.API.Controllers
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(_tokenLifetime),
                 SigningCredentials = creds,
-                Issuer = Issuer,
-                Audience = Audience
+                Issuer = _issuer,
+                Audience = _audience
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

@@ -1,4 +1,5 @@
-﻿using EventTicketingSystem.API.Interfaces;
+﻿using EventTicketingSystem.API.Exceptions;
+using EventTicketingSystem.API.Interfaces;
 using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
@@ -23,19 +24,20 @@ namespace EventTicketingSystem.API.Services
         public async Task<PaymentStatus> GetPaymentStatus(int paymentId)
         {
             var payment = await _paymentRepository.Find(paymentId);
-            if (payment == null)
+            if (payment is null)
             {
-                throw new InvalidOperationException("Payment not found");
+                throw new EntityNotFoundException("Payment not found");
             }
+
             return payment.PaymentStatus;
         }
 
         public async Task<PaymentStatus> PaymentCompleted(int paymentId)
         {
             var payment = await _paymentRepository.Find(paymentId);
-            if (payment == null)
+            if (payment is null)
             {
-                throw new InvalidOperationException("Payment not found");
+                throw new EntityNotFoundException("Payment not found");
             }
 
             if (payment.PaymentStatus == PaymentStatus.Pending)
@@ -54,9 +56,9 @@ namespace EventTicketingSystem.API.Services
         public async Task<PaymentStatus> PaymentFailed(int paymentId)
         {
             var payment = await _paymentRepository.Find(paymentId);
-            if (payment == null)
+            if (payment is null)
             {
-                throw new InvalidOperationException("Payment not found");
+                throw new EntityNotFoundException("Payment not found");
             }
 
             if (payment.PaymentStatus == PaymentStatus.Pending)
@@ -74,19 +76,19 @@ namespace EventTicketingSystem.API.Services
         private async Task UpdateBookingStatus(Payment payment, BookingStatus status, EventSeatStatus seatStatus)
         {
             var booking = await _bookingRepository.Find(payment.BookingId);
-            if (booking is { Status: BookingStatus.Active } && booking.Price == payment.Amount)
+            switch (booking)
             {
-                booking.Status = status;
-                await _bookingRepository.Update(booking);
-                await _bookingSeatRepository.UpdateSeatsStatus(booking.Id, seatStatus);
-            }
-            else if (booking is not { Status: BookingStatus.Active })
-            {
-                throw new InvalidOperationException("No active booking");
-            }
-            else
-            {
-                throw new InvalidOperationException("Invalid booking price");
+                case { Status: BookingStatus.Active } when booking.Price == payment.Amount:
+                    booking.Status = status;
+                    await _bookingRepository.Update(booking);
+                    await _bookingSeatRepository.UpdateSeatsStatus(booking.Id, seatStatus);
+                    break;
+                case { Status: BookingStatus.Active } when booking.Price != payment.Amount:
+                    throw new BusinessException("Invalid booking price");
+                default:
+                {
+                    throw new BusinessException("No active booking found for this payment");
+                }
             }
         }
 

@@ -20,9 +20,9 @@ namespace EventTicketingSystem.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserInfoDto user)
         {
-            if (user == null)
+            if (user is null)
             {
-                return BadRequest();
+                return BadRequest("Empty user data");
             }
 
             await _userService.CreateUser(user);

@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.Net;
+using AutoFixture;
 using EventTicketingSystem.API.Controllers;
 using EventTicketingSystem.API.Interfaces;
 using EventTicketingSystem.API.Models;
@@ -28,31 +29,27 @@ namespace EventTicketingSystem.Tests.Controllers
         {
             // Arrange
             var cartId = "cartId";
-            var cart = _fixture.Create<Cart>();
-            _orderService.GetCart(cartId).Returns(cart);
-
-            // Act
-            var response = await _controller.GetCart(cartId);
-            var result = response.Result as OkObjectResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            result.Value.Should().Be(cart);
-            await _orderService.Received(1).GetCart(cartId);
-        }
-
-        [Test]
-        public async Task GetCart_WithNonExistingCart_ReturnsNotFound()
-        {
-            // Arrange
-            var cartId = "cartId";
-            _orderService.GetCart(cartId).Returns((Cart)null);
+            var expectedCart = _fixture.Create<Cart>();
+            _orderService.GetCart(cartId).Returns(expectedCart);
 
             // Act
             var result = await _controller.GetCart(cartId);
 
             // Assert
-            result.Result.Should().BeOfType<NotFoundResult>();
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(expectedCart);
+            await _orderService.Received(1).GetCart(cartId);
+        }
+
+        [Test]
+        public async Task GetCart_WithNullCartId_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.GetCart(null);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Cart ID is required");
         }
 
         [Test]
@@ -65,49 +62,24 @@ namespace EventTicketingSystem.Tests.Controllers
             _orderService.AddToCart(cartId, order).Returns(cart);
 
             // Act
-            var response = await _controller.AddToCart(cartId, order);
-            var result = response.Result as OkObjectResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            result.Value.Should().Be(cart);
-            await _orderService.Received(1).AddToCart(cartId, order);
-        }
-
-        [Test]
-        public async Task AddToCart_WithNonExistingCart_ReturnsNotFound()
-        {
-            // Arrange
-            var cartId = "cartId";
-            var order = _fixture.Create<SeatOrder>();
-            _orderService.AddToCart(cartId, order).Returns((Cart)null);
-
-            // Act
             var result = await _controller.AddToCart(cartId, order);
 
             // Assert
-            result.Result.Should().BeOfType<NotFoundResult>();
-        }
-
-        [Test]
-        public async Task AddToCart_WithInvalidOrder_ReturnsBadRequest()
-        {
-            // Arrange
-            var cartId = "cartId";
-            var order = _fixture.Create<SeatOrder>();
-            var errorMessage = "error message";
-            _orderService.AddToCart(cartId, order).Throws(new InvalidOperationException(errorMessage));
-
-            // Act
-            var response = await _controller.AddToCart(cartId, order);
-            var result = response.Result as BadRequestObjectResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            result.Value.Should().Be(errorMessage);
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(cart);
             await _orderService.Received(1).AddToCart(cartId, order);
         }
 
+        [Test]
+        public async Task AddToCart_WithNullCartId_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.AddToCart(null, _fixture.Create<SeatOrder>());
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Cart ID and Order are required");
+        }
 
         [Test]
         public async Task DeleteSeat_WithValidParameters_ReturnsOk()
@@ -120,33 +92,48 @@ namespace EventTicketingSystem.Tests.Controllers
             _orderService.RemoveFromCart(cartId, seatId).Returns(cart);
 
             // Act
-            var response = await _controller.DeleteSeat(cartId, eventId, seatId);
-            var result = response.Result as OkObjectResult;
+            var result = await _controller.DeleteSeat(cartId, eventId, seatId);
 
             // Assert
-            Assert.IsNotNull(result);
-            result.Value.Should().Be(cart);
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(cart);
             await _orderService.Received(1).RemoveFromCart(cartId, seatId);
         }
 
         [Test]
-        public async Task DeleteSeat_WithNonExistingCart_ReturnsNotFound()
+        public async Task DeleteSeat_WithNullCartId_ReturnsBadRequest()
         {
-            // Arrange
-            var cartId = "cartId";
-            var eventId = 1;
-            var seatId = 1;
-            _orderService.RemoveFromCart(cartId, seatId).Returns((Cart)null);
-
             // Act
-            var result = await _controller.DeleteSeat(cartId, eventId, seatId);
+            var result = await _controller.DeleteSeat(null, 1, 1);
 
             // Assert
-            result.Result.Should().BeOfType<NotFoundResult>();
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Cart ID, Event ID and Seat ID are required");
         }
 
         [Test]
-        //BookCart
+        public async Task DeleteSeat_WithInvalidEventId_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.DeleteSeat("cartId", null, 1);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Cart ID, Event ID and Seat ID are required");
+        }
+
+        [Test]
+        public async Task DeleteSeat_WithInvalidSeatId_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.DeleteSeat("cartId", 1, null);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Cart ID, Event ID and Seat ID are required");
+        }
+
+        [Test]
         public async Task BookCart_WithValidCart_ReturnsPaymentId()
         {
             // Arrange
@@ -155,17 +142,26 @@ namespace EventTicketingSystem.Tests.Controllers
             _orderService.CheckoutCart(cartId).Returns(paymentId);
 
             // Act
-            var response = await _controller.BookCart(cartId);
-            var result = response.Result as OkObjectResult;
+            var result = await _controller.BookCart(cartId);
 
             // Assert
-            Assert.IsNotNull(result);
-            result.Value.Should().Be(paymentId);
+            result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(paymentId);
             await _orderService.Received(1).CheckoutCart(cartId);
         }
 
         [Test]
-        //BookCart checkout throws exception
+        public async Task BookCart_WithNullCartId_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _controller.BookCart(null);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().Be("Cart ID is required");
+        }
+
+        [Test]
         public async Task BookCart_WithException_ReturnsInternalServerError()
         {
             // Arrange
@@ -174,12 +170,13 @@ namespace EventTicketingSystem.Tests.Controllers
             _orderService.CheckoutCart(cartId).ThrowsAsync(x => throw new InvalidOperationException(errorMessage));
 
             // Act
-            var response = await _controller.BookCart(cartId);
-            var result = response.Result as BadRequestObjectResult;
+            var result = await _controller.BookCart(cartId);
 
             // Assert
-            Assert.IsNotNull(result);
-            result.Value.Should().Be(errorMessage);
+            result.Should().BeOfType<ObjectResult>();
+
+            result.As<ObjectResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            result.As<ObjectResult>().Value.Should().Be(errorMessage);
             await _orderService.Received(1).CheckoutCart(cartId);
         }
     }

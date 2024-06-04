@@ -15,11 +15,16 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpGet("{paymentId}")]
-        public async Task<ActionResult<string>> GetStatus(int paymentId)
+        public async Task<IActionResult> GetStatus(int? paymentId)
         {
+            if (paymentId is null)
+            {
+                return BadRequest("Payment ID is required");
+            }
+
             try
             {
-                var paymentStatus = await _paymentService.GetPaymentStatus(paymentId);
+                var paymentStatus = await _paymentService.GetPaymentStatus(paymentId.Value);
                 return Ok(paymentStatus.ToString());
             }
             catch (InvalidOperationException e)
@@ -29,11 +34,16 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpPost("{paymentId}/complete")]
-        public async Task<ActionResult> Complete(int paymentId)
+        public async Task<IActionResult> Complete(int? paymentId)
         {
+            if (paymentId is null)
+            {
+                return BadRequest("Payment ID is required");
+            }
+
             try
             {
-                await _paymentService.PaymentCompleted(paymentId);
+                await _paymentService.PaymentCompleted(paymentId.Value);
                 return Ok();
             }
             catch (InvalidOperationException e)
@@ -43,11 +53,16 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpPost("{paymentId}/failed")]
-        public async Task<ActionResult> Failed(int paymentId)
+        public async Task<IActionResult> Failed(int? paymentId)
         {
+            if (paymentId is null)
+            {
+                return BadRequest("Payment ID is required");
+            }
+
             try
             {
-                await _paymentService.PaymentFailed(paymentId);
+                await _paymentService.PaymentFailed(paymentId.Value);
                 return Ok();
             }
             catch (InvalidOperationException e)

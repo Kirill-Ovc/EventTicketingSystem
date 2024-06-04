@@ -26,24 +26,26 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpGet("{cityId}")]
-        public async Task<IActionResult> GetByCity(int cityId)
+        public async Task<IActionResult> GetByCity(int? cityId)
         {
-            if (cityId == default)
+            if (cityId is null)
             {
                 return BadRequest("City ID is required");
             }
-            var venue = await _venueRepository.GetVenuesByCity(cityId);
+
+            var venue = await _venueRepository.GetVenuesByCity(cityId.Value);
             return Ok(venue);
         }
 
         [HttpGet("{venueId}/sections")]
-        public async Task<IActionResult> GetSections(int venueId)
+        public async Task<IActionResult> GetSections(int? venueId)
         {
-            if (venueId == default)
+            if (venueId is null)
             {
                 return BadRequest("Venue ID is required");
             }
-            var venue = await _seatRepository.GetSections(venueId);
+
+            var venue = await _seatRepository.GetSections(venueId.Value);
             return Ok(venue);
         }
 
