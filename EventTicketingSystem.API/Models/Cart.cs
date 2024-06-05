@@ -1,14 +1,17 @@
-﻿using EventTicketingSystem.DataAccess.Models.Enums;
-
-namespace EventTicketingSystem.API.Models
+﻿namespace EventTicketingSystem.API.Models
 {
     public class Cart
     {
         public string CartId { get; set; }
+
         public int UserId { get; set; }
+
         public string Status { get; set; }
+
         public List<CartItem> CartItems { get; set; }
+
         public DateTime ExpirationTimeStamp { get; set; }
+
         public decimal TotalPrice
         {
             get
