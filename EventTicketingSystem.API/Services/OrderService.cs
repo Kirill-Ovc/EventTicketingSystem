@@ -11,22 +11,22 @@ namespace EventTicketingSystem.API.Services
     {
         private readonly ILogger<OrderService> _logger;
         private readonly IBookingRepository _bookingRepository;
-        private readonly IBookingSeatRepository _bookingSeatRepository;
+        private readonly IBookingCartMapper _bookingCartMapper;
+        private readonly IBookingSeatService _bookingSeatService;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly IOfferRepository _offerRepository;
         private static readonly int _expirationTimeInMinutes = 10;
 
         public OrderService(ILogger<OrderService> logger,
             IBookingRepository bookingRepository,
-            IBookingSeatRepository bookingSeatRepository,
-            IPaymentRepository paymentRepository,
-            IOfferRepository offerRepository)
+            IBookingCartMapper bookingCartMapper,
+            IBookingSeatService bookingSeatService,
+            IPaymentRepository paymentRepository)
         {
             _logger = logger;
             _bookingRepository = bookingRepository;
-            _bookingSeatRepository = bookingSeatRepository;
+            _bookingCartMapper = bookingCartMapper;
+            _bookingSeatService = bookingSeatService;
             _paymentRepository = paymentRepository;
-            _offerRepository = offerRepository;
         }
 
         public async Task<Cart> GetCart(string cartId)
@@ -38,8 +38,7 @@ namespace EventTicketingSystem.API.Services
                 throw new EntityNotFoundException("Cart not found");
             }
 
-            var cart = MapBookingToCart(booking);
-            cart.CartItems = await GetCartItems(booking.Id);
+            var cart = await _bookingCartMapper.MapBookingToCart(booking);
 
             return cart;
         }
@@ -53,16 +52,9 @@ namespace EventTicketingSystem.API.Services
                 booking = await CreateBooking(order.UserId, cartId);
             }
 
-            var bookingSeat = await _bookingSeatRepository.GetSeat(order.EventSeatId);
-            if (bookingSeat is not null && bookingSeat.BookingId != booking.Id)
-            {
-                throw new BusinessException("Seat is already booked");
-            }
+            await _bookingSeatService.AddSeat(booking.Id, order.EventSeatId, order.OfferId);
 
-            await AddSeat(booking.Id, order.EventSeatId, order.OfferId);
-
-            var cart = MapBookingToCart(booking);
-            cart.CartItems = await GetCartItems(booking.Id);
+            var cart = await _bookingCartMapper.MapBookingToCart(booking);
 
             return cart;
         }
@@ -76,16 +68,9 @@ namespace EventTicketingSystem.API.Services
                 throw new EntityNotFoundException("Cart not found");
             }
 
-            var bookingSeat = await _bookingSeatRepository.GetSeat(eventSeatId);
-            if (bookingSeat is null || bookingSeat.BookingId != booking.Id)
-            {
-                _logger.LogInformation("Seat is not in the cart");
-            }
+            await _bookingSeatService.RemoveSeat(booking.Id, eventSeatId);
 
-            await _bookingSeatRepository.DeleteSeat(booking.Id, eventSeatId);
-
-            var cart = MapBookingToCart(booking);
-            cart.CartItems = await GetCartItems(booking.Id);
+            var cart = await _bookingCartMapper.MapBookingToCart(booking);
 
             return cart;
         }
@@ -100,8 +85,8 @@ namespace EventTicketingSystem.API.Services
             }
 
             booking.Status = BookingStatus.Active;
-            booking.Price = await _bookingSeatRepository.GetTotalPrice(booking.Id);
-            await _bookingSeatRepository.UpdateSeatsStatus(booking.Id, EventSeatStatus.Booked);
+            booking.Price = await _bookingRepository.CalculateTotalPrice(booking.Id);
+            await _bookingSeatService.BookSeats(booking.Id);
 
             var newPayment = new Payment()
             {
@@ -127,48 +112,6 @@ namespace EventTicketingSystem.API.Services
             await _bookingRepository.Add(booking);
             await _bookingRepository.SaveChanges();
             return booking;
-        }
-
-        private async Task<List<CartItem>> GetCartItems(int bookingId)
-        {
-            var cartItems = await _bookingSeatRepository.GetSeats(bookingId);
-            return cartItems.Select(ci => new CartItem()
-            {
-                EventSeatId = ci.EventSeatId,
-                Price = ci.Price,
-                EventId = ci.EventSeat.EventId,
-                EventName = ci.EventSeat.Event.Name
-            }).ToList();
-        }
-
-        private Cart MapBookingToCart(Booking booking)
-        {
-            return new Cart()
-            {
-                CartId = booking.Uuid,
-                UserId = booking.UserId,
-                Status = booking.Status.ToString(),
-                ExpirationTimeStamp = booking.ExpirationTimeStamp,
-                CartItems = new List<CartItem>()
-            };
-        }
-
-        public async Task AddSeat(int bookingId, int eventSeatId, int offerId)
-        {
-            var offer = await _offerRepository.Find(offerId);
-            if (offer == null)
-            {
-                throw new BusinessException($"Price offer not found. OfferId = {offerId}");
-            }
-            var bookingSeat = new BookingSeat()
-            {
-                BookingId = bookingId,
-                EventSeatId = eventSeatId,
-                Price = offer.Price,
-                TicketLevel = offer.TicketLevel
-            };
-
-            await _bookingSeatRepository.Add(bookingSeat);
         }
     }
 }

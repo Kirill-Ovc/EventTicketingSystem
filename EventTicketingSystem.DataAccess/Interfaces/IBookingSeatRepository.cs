@@ -10,5 +10,4 @@ public interface IBookingSeatRepository
     Task DeleteSeat(int bookingId, int eventSeatId);
     Task<BookingSeat> GetSeat(int eventSeatId);
     Task UpdateSeatsStatus(int bookingId, EventSeatStatus status);
-    Task<decimal> GetTotalPrice(int bookingId);
 }

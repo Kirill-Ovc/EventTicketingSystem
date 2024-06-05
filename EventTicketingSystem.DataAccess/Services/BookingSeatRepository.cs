@@ -62,12 +62,5 @@ namespace EventTicketingSystem.DataAccess.Services
 
             await _context.SaveChangesAsync();
         }
-
-        public async Task<decimal> GetTotalPrice(int bookingId)
-        {
-            return await _context.BookingSeats
-                .Where(bs => bs.BookingId == bookingId)
-                .SumAsync(bs => bs.Price);
-        }
     }
 }

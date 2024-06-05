@@ -12,6 +12,8 @@ namespace EventTicketingSystem.API.Extensions
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IBookingSeatService, BookingSeatService>();
+            services.AddScoped<IBookingCartMapper, BookingCartMapper>();
         }
 
         public static void AddConfigurations(this IServiceCollection services, IConfiguration configuration)

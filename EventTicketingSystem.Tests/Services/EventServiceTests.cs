@@ -7,7 +7,6 @@ using EventTicketingSystem.API.Services;
 using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
-using EventTicketingSystem.DataAccess.Services;
 using FluentAssertions;
 using NSubstitute;
 
