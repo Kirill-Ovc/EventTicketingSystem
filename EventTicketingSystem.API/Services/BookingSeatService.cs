@@ -28,7 +28,7 @@ namespace EventTicketingSystem.API.Services
             }
 
             var offer = await _offerRepository.Find(offerId);
-            if (offer == null)
+            if (offer is null)
             {
                 throw new BusinessException($"Price offer not found. OfferId = {offerId}");
             }

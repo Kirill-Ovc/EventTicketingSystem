@@ -60,7 +60,7 @@ namespace EventTicketingSystem.DataAccess.Services
         public async Task UpdateEventSeat(EventSeat eventSeat)
         {
             var entity = await _context.EventSeats.FindAsync(eventSeat.Id);
-            if (entity == null)
+            if (entity is null)
             {
                 throw new InvalidOperationException("Update failed. Can't find entity by Id");
             }

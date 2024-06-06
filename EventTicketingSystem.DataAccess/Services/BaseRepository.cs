@@ -26,7 +26,7 @@ namespace EventTicketingSystem.DataAccess.Services
         public virtual async Task Update(TEntity entity)
         {
             var found = await _context.Set<TEntity>().FindAsync(entity.Id);
-            if (found == null)
+            if (found is null)
             {
                 throw new InvalidOperationException("Update failed. Can't find entity by Id");
             }

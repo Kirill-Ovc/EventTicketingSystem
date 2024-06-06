@@ -38,7 +38,7 @@ namespace EventTicketingSystem.DataAccess.Extensions
         {
             using var scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<DatabaseContext>();
-            if (dbContext == null)
+            if (dbContext is null)
             {
                 throw new InvalidOperationException("Database Context is not registered. AddDataAccess() method was not called");
             }
@@ -50,7 +50,7 @@ namespace EventTicketingSystem.DataAccess.Extensions
             ArgumentNullException.ThrowIfNull(configuration);
 
             var databaseSettings = configuration.GetSection(DatabaseSettings.SectionName).Get<DatabaseSettings>();
-            if (databaseSettings == null)
+            if (databaseSettings is null)
             {
                 throw new ArgumentException($"Configuration section '{DatabaseSettings.SectionName}' is missing or has an invalid structure.");
             }
