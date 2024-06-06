@@ -1,6 +1,6 @@
 ﻿namespace EventTicketingSystem.DataAccess.Models.Enums
 {
-    internal enum PaymentMethod
+    public enum PaymentMethod
     {
         None = 0,
         DebitCard = 1,

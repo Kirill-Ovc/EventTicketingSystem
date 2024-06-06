@@ -3,7 +3,7 @@ using EventTicketingSystem.DataAccess.Models.Enums;
 
 namespace EventTicketingSystem.DataAccess.Models.Entities
 {
-    internal class Offer : IEntity
+    public class Offer : IEntity
     {
         public int Id { get; set; }
         public int EventId { get; set; }

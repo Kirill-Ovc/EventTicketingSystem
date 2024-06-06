@@ -30,7 +30,7 @@ namespace EventTicketingSystem.Tests.DataAccess
             _context = DatabaseHelper.CreateDbContext();
             var mockMapper = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new AutoMapperProfiles());
+                cfg.AddProfile(new MapperProfile());
             });
             var mapper = mockMapper.CreateMapper();
             _ticketRepository = new TicketRepository(_context, mapper);

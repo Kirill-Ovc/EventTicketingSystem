@@ -79,13 +79,13 @@ namespace EventTicketingSystem.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("DataAndTime")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("EventInfoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DataAndTime")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VenueId")
@@ -470,7 +470,7 @@ namespace EventTicketingSystem.DataAccess.Migrations
             modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Seat", b =>
                 {
                     b.HasOne("EventTicketingSystem.DataAccess.Models.Entities.Section", "Section")
-                        .WithMany()
+                        .WithMany("Seats")
                         .HasForeignKey("SectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -530,6 +530,11 @@ namespace EventTicketingSystem.DataAccess.Migrations
             modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.EventInfo", b =>
                 {
                     b.Navigation("EventOccurrences");
+                });
+
+            modelBuilder.Entity("EventTicketingSystem.DataAccess.Models.Entities.Section", b =>
+                {
+                    b.Navigation("Seats");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,5 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
-using System;
 using System.Text.Json;
 
 namespace EventTicketingSystem.Tests.Seed
@@ -213,7 +212,6 @@ namespace EventTicketingSystem.Tests.Seed
                 var booking = new Booking
                 {
                     UserId = i,
-                    EventSeatId = 20 + i,
                     Status = BookingStatus.Active,
                     ExpirationTimeStamp = DateTime.Today.AddDays(1),
                     Price = 1000
@@ -225,7 +223,6 @@ namespace EventTicketingSystem.Tests.Seed
                 var booking = new Booking
                 {
                     UserId = i,
-                    EventSeatId = 10 + i,
                     Status = BookingStatus.Expired,
                     ExpirationTimeStamp = DateTime.Today.AddDays(-1),
                     Price = 900

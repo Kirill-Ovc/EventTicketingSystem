@@ -30,6 +30,7 @@ namespace EventTicketingSystem.DataAccess.Services
         public async Task<ICollection<EventSeat>> GetEventSeats(int eventId, int sectionId)
         {
             return await _context.EventSeats
+                .Where(s => s.Seat != null)
                 .Include(s => s.Seat)
                 .Where(s => s.EventId == eventId && s.Seat.SectionId == sectionId)
                 .ToListAsync();
@@ -59,7 +60,7 @@ namespace EventTicketingSystem.DataAccess.Services
         public async Task UpdateEventSeat(EventSeat eventSeat)
         {
             var entity = await _context.EventSeats.FindAsync(eventSeat.Id);
-            if (entity == null)
+            if (entity is null)
             {
                 throw new InvalidOperationException("Update failed. Can't find entity by Id");
             }

@@ -1,7 +1,7 @@
-﻿using EventTicketingSystem.DataAccess.Interfaces;
+﻿using EventTicketingSystem.DataAccess.Helpers;
+using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Context;
 using EventTicketingSystem.DataAccess.Models.Settings;
-using EventTicketingSystem.DataAccess.Seed;
 using EventTicketingSystem.DataAccess.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,19 +25,20 @@ namespace EventTicketingSystem.DataAccess.Extensions
             services.RegisterContext(configuration);
             services.RegisterRepositories();
 
-            services.AddScoped<ISeedService, SeedService>();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(typeof(MapperProfile));
         }
 
         /// <summary>
-        /// Initialize Database with initial data
+        /// Initialize Database with initial data.
+        /// Call after services are registered and app is configured.
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <exception cref="InvalidOperationException"></exception>
         public static void InitializeDatabase(this IServiceProvider serviceProvider)
         {
-            var dbContext = serviceProvider.GetService<DatabaseContext>();
-            if (dbContext == null)
+            using var scope = serviceProvider.CreateScope();
+            var dbContext = scope.ServiceProvider.GetService<DatabaseContext>();
+            if (dbContext is null)
             {
                 throw new InvalidOperationException("Database Context is not registered. AddDataAccess() method was not called");
             }
@@ -49,7 +50,7 @@ namespace EventTicketingSystem.DataAccess.Extensions
             ArgumentNullException.ThrowIfNull(configuration);
 
             var databaseSettings = configuration.GetSection(DatabaseSettings.SectionName).Get<DatabaseSettings>();
-            if (databaseSettings == null)
+            if (databaseSettings is null)
             {
                 throw new ArgumentException($"Configuration section '{DatabaseSettings.SectionName}' is missing or has an invalid structure.");
             }
@@ -70,6 +71,8 @@ namespace EventTicketingSystem.DataAccess.Extensions
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IVenueRepository, VenueRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IOfferRepository, OfferRepository>();
+            services.AddScoped<IBookingSeatRepository, BookingSeatRepository>();
         }
     }
 }

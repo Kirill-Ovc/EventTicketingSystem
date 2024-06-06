@@ -25,6 +25,8 @@ namespace EventTicketingSystem.DataAccess.Models.Context
 
         public DbSet<Booking> Bookings { get; set; }
 
+        public DbSet<BookingSeat> BookingSeats { get; set; }
+
         public DbSet<Ticket> Tickets { get; set; }
 
         public DbSet<Payment> Payments { get; set; }

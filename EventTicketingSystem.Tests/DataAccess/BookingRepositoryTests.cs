@@ -48,7 +48,6 @@ namespace EventTicketingSystem.Tests.DataAccess
             var expectedBooking = new Booking
             {
                 UserId = 1,
-                EventSeatId = 21,
                 Status = BookingStatus.Active,
                 ExpirationTimeStamp = DateTime.Today.AddDays(1),
                 Price = 1000
@@ -76,8 +75,7 @@ namespace EventTicketingSystem.Tests.DataAccess
         {
             options
                 .Excluding(o => o.Id)
-                .Excluding(o => o.User)
-                .Excluding(o => o.EventSeat);
+                .Excluding(o => o.User);
             return options;
         }
     }
