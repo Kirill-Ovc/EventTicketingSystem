@@ -23,9 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>EventTicketingSystem.Tests</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="EventTicketingSystem.Tests" />
+    <InternalsVisibleTo Include="EventTicketingSystem.Tests.Integration" />
   </ItemGroup>
 
   <ItemGroup>
