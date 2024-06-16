@@ -16,17 +16,26 @@ namespace EventTicketingSystem.DataAccess.Services
 
         public async Task<ICollection<Event>> GetEvents()
         {
-            return await _context.Events.ToListAsync();
+            return await _context.Events
+                .Include(e => e.EventInfo)
+                .Include(e => e.Venue)
+                .ToListAsync();
         }
 
         public async Task<ICollection<Event>> GetEventsByCity(int cityId)
         {
-            return await _context.Events.Where(e => e.Venue.CityId == cityId).ToListAsync();
+            return await _context.Events
+                .Include(e => e.EventInfo)
+                .Include(e => e.Venue)
+                .Where(e => e.Venue.CityId == cityId).ToListAsync();
         }
 
         public async Task<ICollection<Event>> GetEventsByVenue(int venueId)
         {
-            return await _context.Events.Where(e => e.VenueId == venueId).ToListAsync();
+            return await _context.Events
+                .Include(e => e.EventInfo)
+                .Include(e => e.Venue)
+                .Where(e => e.VenueId == venueId).ToListAsync();
         }
     }
 }

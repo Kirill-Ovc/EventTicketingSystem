@@ -11,6 +11,8 @@ namespace EventTicketingSystem.Tests.Integration
     {
         public HttpClient Client { get; }
 
+        public DatabaseContext DbContext { get; }
+
         public TestWebApplication()
         {
             var appFactory = new WebApplicationFactory<Program>()
@@ -23,7 +25,11 @@ namespace EventTicketingSystem.Tests.Integration
                         services.AddDbContext<DatabaseContext>(options => options.UseInMemoryDatabase("TestDb"));
                     });
                 });
+
             Client = appFactory.CreateClient();
+
+            var scope = appFactory.Services.CreateScope();
+            DbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         }
 
         public async Task AuthenticateAsync()
