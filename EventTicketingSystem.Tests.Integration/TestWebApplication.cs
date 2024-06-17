@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using EventTicketingSystem.DataAccess.Models.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,7 @@ namespace EventTicketingSystem.Tests.Integration
 
         private async Task<string> GetTokenAsync()
         {
-            var response = await Client.PostAsync("api/identity/token", new StringContent("{'username': 'test', 'password': 'test'}"));
+            var response = await Client.PostAsJsonAsync("api/identity/token", new { username = "test", password = "test" });
             var token = await response.Content.ReadAsStringAsync();
             return token;
         }

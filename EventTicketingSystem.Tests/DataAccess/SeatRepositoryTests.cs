@@ -225,6 +225,23 @@ namespace EventTicketingSystem.Tests.DataAccess
             var updatedSeat = await _seatRepository.Find(newSeat.Id);
             updatedSeat.Should().BeNull();
         }
+        
+        [Test]
+        public void SeatRepository_UpdateEventSeat_WhenNotExist_ThrowsException()
+        {
+            var newEventSeat = new EventSeat
+            {
+                Id = 2000,
+                EventId = 1,
+                SeatId = 1,
+                Status = EventSeatStatus.Booked
+            };
+
+            Assert.That(async () =>
+            {
+                await _seatRepository.UpdateEventSeat(newEventSeat);
+            }, Throws.Exception.TypeOf<InvalidOperationException>());
+        }
 
         [Test]
         public void SeatRepository_Delete_WhenSeatDoesNotExist_DoesNotThrowException()

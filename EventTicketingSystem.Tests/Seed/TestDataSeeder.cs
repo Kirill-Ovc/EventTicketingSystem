@@ -68,6 +68,24 @@ namespace EventTicketingSystem.Tests.Seed
             await SeedEntities(eventSeats);
         }
 
+        public async Task SeedOffers(int venueId, int eventId)
+        {
+            if (await _context.Offers.AnyAsync()) return;
+
+            var sections = await _context.Sections
+                .Where(s => s.VenueId == venueId)
+                .OrderBy(s => s.Id)
+                .ToListAsync();
+
+            if (sections.Count == 0)
+            {
+                throw new ArgumentException("No sections for venueId");
+            }
+
+            var offers = _dataProvider.GetOffers(eventId, sections);
+            await SeedEntities(offers);
+        }
+
         public async Task SeedBookings()
         {
             if (await _context.Bookings.AnyAsync()) return;
@@ -90,6 +108,14 @@ namespace EventTicketingSystem.Tests.Seed
 
             var tickets = _dataProvider.GetTickets();
             await SeedEntities(tickets);
+        }
+
+        public async Task SeedBookingSeats(int bookingId)
+        {
+            if (await _context.BookingSeats.AnyAsync()) return;
+
+            var seats = _dataProvider.GetBookingSeats(bookingId);
+            await SeedEntities(seats);
         }
 
         private async Task SeedEntities<T>(IEnumerable<T> entities) where T : class

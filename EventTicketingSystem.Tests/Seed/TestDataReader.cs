@@ -204,6 +204,21 @@ namespace EventTicketingSystem.Tests.Seed
             return eventSeats;
         }
 
+        public List<Offer> GetOffers(int eventId, List<Section> sections)
+        {
+            var offers = sections.Select(s =>
+                    new Offer()
+                    {
+                        EventId = eventId,
+                        SectionId = s.Id,
+                        RowNumber = 1,
+                        TicketLevel = TicketLevel.Other,
+                        Price = 100
+                    })
+                .ToList();
+            return offers;
+        }
+
         public List<Booking> GetBookings()
         {
             var bookings = new List<Booking>();
@@ -283,6 +298,23 @@ namespace EventTicketingSystem.Tests.Seed
             }
 
             return tickets;
+        }
+
+        public List<BookingSeat> GetBookingSeats(int bookingId)
+        {
+            var seats = new List<BookingSeat>();
+            for (int i = 0; i < 10; i++)
+            {
+                seats.Add(new BookingSeat()
+                {
+                    BookingId = bookingId,
+                    EventSeatId = i+1,
+                    TicketLevel = TicketLevel.Other,
+                    Price = 200
+                });
+            }
+
+            return seats;
         }
     }
 }
