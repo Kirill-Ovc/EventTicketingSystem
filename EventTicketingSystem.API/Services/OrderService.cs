@@ -1,9 +1,11 @@
-﻿using EventTicketingSystem.API.Exceptions;
+﻿using EventTicketingSystem.API.Constants;
+using EventTicketingSystem.API.Exceptions;
 using EventTicketingSystem.API.Interfaces;
 using EventTicketingSystem.API.Models;
 using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EventTicketingSystem.API.Services
 {
@@ -14,19 +16,22 @@ namespace EventTicketingSystem.API.Services
         private readonly IBookingCartMapper _bookingCartMapper;
         private readonly IBookingSeatService _bookingSeatService;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IMemoryCache _cache;
         private static readonly int _expirationTimeInMinutes = 10;
 
         public OrderService(ILogger<OrderService> logger,
             IBookingRepository bookingRepository,
             IBookingCartMapper bookingCartMapper,
             IBookingSeatService bookingSeatService,
-            IPaymentRepository paymentRepository)
+            IPaymentRepository paymentRepository,
+            IMemoryCache cache)
         {
             _logger = logger;
             _bookingRepository = bookingRepository;
             _bookingCartMapper = bookingCartMapper;
             _bookingSeatService = bookingSeatService;
             _paymentRepository = paymentRepository;
+            _cache = cache;
         }
 
         public async Task<Cart> GetCart(string cartId)
@@ -54,6 +59,8 @@ namespace EventTicketingSystem.API.Services
 
             await _bookingSeatService.AddSeat(booking.Id, order.EventSeatId, order.OfferId);
 
+            InvalidateEventCache(order.EventId);
+
             var cart = await _bookingCartMapper.MapBookingToCart(booking);
 
             return cart;
@@ -71,6 +78,10 @@ namespace EventTicketingSystem.API.Services
             await _bookingSeatService.RemoveSeat(booking.Id, eventSeatId);
 
             var cart = await _bookingCartMapper.MapBookingToCart(booking);
+            foreach (var seat in cart.CartItems)
+            {
+                InvalidateEventCache(seat.EventId);
+            }
 
             return cart;
         }
@@ -87,6 +98,7 @@ namespace EventTicketingSystem.API.Services
             booking.Status = BookingStatus.Active;
             booking.Price = await _bookingRepository.CalculateTotalPrice(booking.Id);
             await _bookingSeatService.BookSeats(booking.Id);
+            await InvalidateEventCache(booking);
 
             var newPayment = new Payment()
             {
@@ -112,6 +124,21 @@ namespace EventTicketingSystem.API.Services
             await _bookingRepository.Add(booking);
             await _bookingRepository.SaveChanges();
             return booking;
+        }
+
+        private void InvalidateEventCache(int eventId)
+        {
+            var cacheKey = string.Format(CacheKeys.EventSeats, eventId);
+            _cache.Remove(cacheKey);
+        }
+
+        private async Task InvalidateEventCache(Booking booking)
+        {
+            var cart = await _bookingCartMapper.MapBookingToCart(booking);
+            foreach (var seat in cart.CartItems)
+            {
+                InvalidateEventCache(seat.EventId);
+            }
         }
     }
 }
