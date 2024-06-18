@@ -20,6 +20,13 @@ namespace EventTicketingSystem.API.Helpers
                     opt.MapFrom(src => src.EventInfo.Type))
                 .ForMember(dest => dest.PosterUrl, opt =>
                     opt.MapFrom(src => src.EventInfo.PosterUrl));
+            CreateMap<EventSeat, EventSeatDto>()
+                .ForMember(dest => dest.SectionId, opt =>
+                    opt.MapFrom(src => src.Seat.SectionId))
+                .ForMember(dest => dest.RowNumber, opt =>
+                    opt.MapFrom(src => src.Seat.RowNumber))
+                .ForMember(dest => dest.Prices, opt => 
+                    opt.Ignore());
         }
     }
 }

@@ -24,6 +24,7 @@ namespace EventTicketingSystem.DataAccess.Services
         {
             return await _context.EventSeats
                 .Where(s => s.EventId == eventId)
+                .Include(s => s.Seat)
                 .ToListAsync();
         }
 
