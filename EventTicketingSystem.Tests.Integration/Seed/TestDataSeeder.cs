@@ -1,35 +1,19 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace EventTicketingSystem.Tests.Seed
+namespace EventTicketingSystem.Tests.Integration.Seed
 {
     internal class TestDataSeeder
     {
         private readonly DatabaseContext _context;
-        private readonly TestDataReader _dataProvider;
+        private readonly TestDataProvider _dataProvider;
 
         public TestDataSeeder(
             DatabaseContext context,
-            TestDataReader dataProvider)
+            TestDataProvider dataProvider)
         {
             _context = context;
             _dataProvider = dataProvider;
-        }
-
-        public async Task SeedCities()
-        {
-            if (await _context.Cities.AnyAsync()) return;
-
-            var cities = await _dataProvider.GetCities();
-            await SeedEntities(cities);
-        }
-
-        public async Task SeedUsers()
-        {
-            if (await _context.Users.AnyAsync()) return;
-
-            var users = await _dataProvider.GetUsers();
-            await SeedEntities(users);
         }
 
         public async Task SeedVenues()
@@ -76,12 +60,6 @@ namespace EventTicketingSystem.Tests.Seed
                 .Where(s => s.VenueId == venueId)
                 .OrderBy(s => s.Id)
                 .ToListAsync();
-
-            if (sections.Count == 0)
-            {
-                throw new ArgumentException("No sections for venueId");
-            }
-
             var offers = _dataProvider.GetOffers(eventId, sections);
             await SeedEntities(offers);
         }
@@ -108,14 +86,6 @@ namespace EventTicketingSystem.Tests.Seed
 
             var tickets = _dataProvider.GetTickets();
             await SeedEntities(tickets);
-        }
-
-        public async Task SeedBookingSeats(int bookingId)
-        {
-            if (await _context.BookingSeats.AnyAsync()) return;
-
-            var seats = _dataProvider.GetBookingSeats(bookingId);
-            await SeedEntities(seats);
         }
 
         private async Task SeedEntities<T>(IEnumerable<T> entities) where T : class

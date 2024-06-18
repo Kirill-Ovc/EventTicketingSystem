@@ -33,7 +33,7 @@ namespace EventTicketingSystem.API.Controllers
             return Ok(events);
         }
 
-        [HttpGet("events/{eventId}/sections/{sectionId}/seats")]
+        [HttpGet("{eventId}/sections/{sectionId}/seats")]
         public async Task<IActionResult> GetSeats(int? eventId, int? sectionId)
         {
             if (eventId is null || sectionId is null)

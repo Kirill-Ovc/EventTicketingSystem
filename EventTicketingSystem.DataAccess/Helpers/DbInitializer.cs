@@ -16,14 +16,20 @@ namespace EventTicketingSystem.DataAccess.Helpers
         /// <param name="context"></param>
         public static void Initialize(DatabaseContext context)
         {
-            context.Database.OpenConnection();
-            context.Database.EnsureCreated();
-
+            if (context.Database.IsRelational())
+            {
+                context.Database.OpenConnection();
+                context.Database.EnsureCreated();
+            }
+            
             SeedCities(context).Wait();
             SeedUsers(context).Wait();
 
             context.SaveChanges();
-            context.Database.CloseConnection();
+            if (context.Database.IsRelational())
+            {
+                context.Database.CloseConnection();
+            }
         }
 
         private static async Task SeedCities(DatabaseContext context)

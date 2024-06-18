@@ -1,27 +1,10 @@
 ﻿using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
-using System.Text.Json;
 
-namespace EventTicketingSystem.Tests.Seed
+namespace EventTicketingSystem.Tests.Integration.Seed
 {
-    internal class TestDataReader
+    internal class TestDataProvider
     {
-        public async Task<List<User>> GetUsers()
-        {
-            var userData = await File.ReadAllTextAsync("Seed/TestData/UserSeedData.json");
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var users = JsonSerializer.Deserialize<List<User>>(userData, options);
-            return users;
-        }
-
-        public async Task<List<City>> GetCities()
-        {
-            var cityData = await File.ReadAllTextAsync("Seed/TestData/CitySeedData.json");
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var cities = JsonSerializer.Deserialize<List<City>>(cityData, options);
-            return cities;
-        }
-
         public List<Venue> GetVenues()
         {
             var venues = new List<Venue>()
@@ -54,7 +37,7 @@ namespace EventTicketingSystem.Tests.Seed
                 {
                     Id = 4,
                     Name = "Moscone Center",
-                    CityId = 4,
+                    CityId = 10,
                     Address = "San Francisco, California, United States",
                     Information = "The George R. Moscone Convention Center"
                 }
@@ -120,6 +103,7 @@ namespace EventTicketingSystem.Tests.Seed
                 {
                     new Event
                     {
+                        Id = 11,
                         VenueId = 1,
                         EventInfoId = 1,
                         DataAndTime = new DateTime(2024, 05, 01, 16, 0, 0, DateTimeKind.Utc),
@@ -127,6 +111,7 @@ namespace EventTicketingSystem.Tests.Seed
                     },
                     new Event
                     {
+                        Id = 12,
                         VenueId = 3,
                         EventInfoId = 1,
                         DataAndTime = new DateTime(2024, 05, 09, 16, 0, 0, DateTimeKind.Utc),
@@ -145,6 +130,7 @@ namespace EventTicketingSystem.Tests.Seed
                 {
                     new Event
                     {
+                        Id = 21,
                         VenueId = 2,
                         EventInfoId = 2,
                         DataAndTime = new DateTime(2024, 06, 01, 14, 0, 0, DateTimeKind.Utc),
@@ -152,6 +138,7 @@ namespace EventTicketingSystem.Tests.Seed
                     },
                     new Event
                     {
+                        Id = 22,
                         VenueId = 2,
                         EventInfoId = 2,
                         DataAndTime = new DateTime(2024, 06, 03, 14, 0, 0, DateTimeKind.Utc),
@@ -159,6 +146,7 @@ namespace EventTicketingSystem.Tests.Seed
                     },
                     new Event
                     {
+                        Id = 23,
                         VenueId = 1,
                         EventInfoId = 2,
                         DataAndTime = new DateTime(2024, 06, 10, 14, 0, 0, DateTimeKind.Utc),
@@ -177,6 +165,7 @@ namespace EventTicketingSystem.Tests.Seed
                 {
                     new Event
                     {
+                        Id = 31,
                         VenueId = 4,
                         EventInfoId = 3,
                         DataAndTime = new DateTime(2024, 09, 05, 12, 0, 0, DateTimeKind.Utc),
@@ -185,6 +174,21 @@ namespace EventTicketingSystem.Tests.Seed
                 }
             };
             return new List<EventInfo>() { event1, event2, event3 };
+        }
+
+        public List<Offer> GetOffers(int eventId, List<Section> sections)
+        {
+            var offers = sections.Select(s =>
+                new Offer()
+                {
+                    EventId = eventId,
+                    SectionId = s.Id,
+                    RowNumber = 1,
+                    TicketLevel = TicketLevel.Other,
+                    Price = 100
+                })
+                .ToList();
+            return offers;
         }
 
         public List<EventSeat> GetEventSeats(List<Seat> venueSeats, int eventId)
@@ -204,20 +208,7 @@ namespace EventTicketingSystem.Tests.Seed
             return eventSeats;
         }
 
-        public List<Offer> GetOffers(int eventId, List<Section> sections)
-        {
-            var offers = sections.Select(s =>
-                    new Offer()
-                    {
-                        EventId = eventId,
-                        SectionId = s.Id,
-                        RowNumber = 1,
-                        TicketLevel = TicketLevel.Other,
-                        Price = 100
-                    })
-                .ToList();
-            return offers;
-        }
+        //sea
 
         public List<Booking> GetBookings()
         {
@@ -298,23 +289,6 @@ namespace EventTicketingSystem.Tests.Seed
             }
 
             return tickets;
-        }
-
-        public List<BookingSeat> GetBookingSeats(int bookingId)
-        {
-            var seats = new List<BookingSeat>();
-            for (int i = 0; i < 10; i++)
-            {
-                seats.Add(new BookingSeat()
-                {
-                    BookingId = bookingId,
-                    EventSeatId = i+1,
-                    TicketLevel = TicketLevel.Other,
-                    Price = 200
-                });
-            }
-
-            return seats;
         }
     }
 }

@@ -27,4 +27,8 @@
     <ProjectReference Include="..\EventTicketingSystem.DataAccess\EventTicketingSystem.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="EventTicketingSystem.Tests.Integration" />
+  </ItemGroup>
+
 </Project>
