@@ -15,6 +15,7 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> Get()
         {
             var events = await _eventService.GetAllEvents();
@@ -22,6 +23,7 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpGet("{cityId}")]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> GetByCity(int? cityId)
         {
             if (cityId is null)
@@ -34,6 +36,7 @@ namespace EventTicketingSystem.API.Controllers
         }
 
         [HttpGet("{eventId}/sections/{sectionId}/seats")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> GetSeats(int? eventId, int? sectionId)
         {
             if (eventId is null || sectionId is null)

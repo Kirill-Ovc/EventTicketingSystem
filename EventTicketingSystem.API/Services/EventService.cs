@@ -19,7 +19,7 @@ namespace EventTicketingSystem.API.Services
         private readonly MemoryCacheEntryOptions _cacheOptions = new()
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
-            SlidingExpiration = TimeSpan.FromMinutes(1)
+            SlidingExpiration = TimeSpan.FromMinutes(2)
         };
 
         public EventService(
