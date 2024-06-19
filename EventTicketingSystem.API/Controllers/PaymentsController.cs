@@ -1,8 +1,10 @@
 ﻿using EventTicketingSystem.API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTicketingSystem.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentsController : ControllerBase

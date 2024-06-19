@@ -1,9 +1,11 @@
 ﻿using EventTicketingSystem.API.Interfaces;
 using EventTicketingSystem.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTicketingSystem.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
