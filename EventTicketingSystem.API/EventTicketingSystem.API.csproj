@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="EventTicketingSystem.Tests.Integration" />
+    <InternalsVisibleTo Include="EventTicketingSystem.Tests.Concurrency" />
   </ItemGroup>
 
 </Project>
