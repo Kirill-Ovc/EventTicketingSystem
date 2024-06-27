@@ -8,6 +8,7 @@ using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
 
 namespace EventTicketingSystem.Tests.Services
@@ -30,7 +31,8 @@ namespace EventTicketingSystem.Tests.Services
 
             _fixture.Customize<Seat>(e => e
                 .Without(f => f.Venue)
-                .Without(f => f.Section));
+                .Without(f => f.Section)
+                .With(f => f.SectionId, 1));
             _fixture.Customize<Event>(e => e
                 .Without(f => f.EventInfo));
             _fixture.Customize<EventSeat>(e => e
@@ -43,7 +45,8 @@ namespace EventTicketingSystem.Tests.Services
             _eventRepository = Substitute.For<IEventRepository>();
             _seatRepository = Substitute.For<ISeatRepository>();
             _offerRepository = Substitute.For<IOfferRepository>();
-            _service = new EventService(_eventRepository, _seatRepository, _offerRepository, _mapper);
+            var memoryCache = Substitute.For<IMemoryCache>();
+            _service = new EventService(_eventRepository, _seatRepository, _offerRepository, _mapper, memoryCache);
         }
 
         [Test]
@@ -92,7 +95,7 @@ namespace EventTicketingSystem.Tests.Services
             var seats = _fixture.CreateMany<EventSeat>(100).ToList();
 
             _eventRepository.Find(eventId).Returns(_testEvent);
-            _seatRepository.GetEventSeats(eventId, sectionId).Returns(seats);
+            _seatRepository.GetEventSeats(eventId).Returns(seats);
             _offerRepository.GetOffersByEvent(eventId).Returns(_testOffers);
             seats[0] = new EventSeat
             {
@@ -135,7 +138,7 @@ namespace EventTicketingSystem.Tests.Services
             // Assert
             result.Should().HaveSameCount(seats);
             result[0].Should().BeEquivalentTo(expectedSeat);
-            await _seatRepository.Received().GetEventSeats(eventId, sectionId);
+            await _seatRepository.Received().GetEventSeats(eventId);
             await _offerRepository.Received().GetOffersByEvent(eventId);
         }
 

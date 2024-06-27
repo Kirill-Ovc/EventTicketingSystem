@@ -21,6 +21,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddBusinessServices();
 builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using EventTicketingSystem.API.Interfaces;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EventTicketingSystem.Tests.Services
 {
@@ -28,9 +29,10 @@ namespace EventTicketingSystem.Tests.Services
             _bookingCartMapper = Substitute.For<IBookingCartMapper>();
             _bookingSeatService = Substitute.For<IBookingSeatService>();
             _paymentRepository = Substitute.For<IPaymentRepository>();
+            var memoryCache = Substitute.For<IMemoryCache>();
 
             _service = new OrderService(logger, 
-                _bookingRepository, _bookingCartMapper, _bookingSeatService, _paymentRepository);
+                _bookingRepository, _bookingCartMapper, _bookingSeatService, _paymentRepository, memoryCache);
         }
 
         [Test]
