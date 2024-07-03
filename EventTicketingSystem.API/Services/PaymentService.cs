@@ -11,14 +11,17 @@ namespace EventTicketingSystem.API.Services
         private readonly IPaymentRepository _paymentRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly IBookingSeatRepository _bookingSeatRepository;
+        private readonly INotificationService _notificationService;
 
         public PaymentService(IPaymentRepository paymentRepository,
             IBookingRepository bookingRepository,
-            IBookingSeatRepository bookingSeatRepository)
+            IBookingSeatRepository bookingSeatRepository,
+            INotificationService notificationService)
         {
             _paymentRepository = paymentRepository;
             _bookingRepository = bookingRepository;
             _bookingSeatRepository = bookingSeatRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<PaymentStatus> GetPaymentStatus(int paymentId)
@@ -49,6 +52,7 @@ namespace EventTicketingSystem.API.Services
             }
 
             await UpdateBookingStatus(payment, BookingStatus.Paid, EventSeatStatus.Sold);
+            await _notificationService.NotifyCheckoutCompletedAsync(payment.BookingId);
 
             return payment.PaymentStatus;
         }
