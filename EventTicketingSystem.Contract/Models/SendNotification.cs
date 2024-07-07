@@ -1,4 +1,4 @@
-﻿namespace EventTicketingSystem.API.Messaging
+﻿namespace EventTicketingSystem.Contract.Models
 {
     public class SendNotification : ICommand
     {

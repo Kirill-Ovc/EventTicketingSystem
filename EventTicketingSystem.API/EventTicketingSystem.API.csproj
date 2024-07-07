@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EventTicketingSystem.Contract\EventTicketingSystem.Contract.csproj" />
     <ProjectReference Include="..\EventTicketingSystem.DataAccess\EventTicketingSystem.DataAccess.csproj" />
   </ItemGroup>
 

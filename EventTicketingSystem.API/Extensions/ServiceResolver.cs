@@ -1,7 +1,7 @@
 ﻿using EventTicketingSystem.API.Interfaces;
-using EventTicketingSystem.API.Messaging;
 using EventTicketingSystem.API.Models;
 using EventTicketingSystem.API.Services;
+using EventTicketingSystem.Contract.Models;
 
 namespace EventTicketingSystem.API.Extensions
 {

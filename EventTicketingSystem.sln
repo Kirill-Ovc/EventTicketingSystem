@@ -18,7 +18,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventTicketingSystem.API", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventTicketingSystem.Tests.Integration", "EventTicketingSystem.Tests.Integration\EventTicketingSystem.Tests.Integration.csproj", "{B6460280-391E-47DF-9FEA-6B82DE0856B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingSystem.Tests.Concurrency", "EventTicketingSystem.Tests.Concurrency\EventTicketingSystem.Tests.Concurrency.csproj", "{DF992BEE-B084-43F0-960A-C719FAFF9C4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventTicketingSystem.Tests.Concurrency", "EventTicketingSystem.Tests.Concurrency\EventTicketingSystem.Tests.Concurrency.csproj", "{DF992BEE-B084-43F0-960A-C719FAFF9C4D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventTicketingSystem.Notifications", "EventTicketingSystem.Notifications\EventTicketingSystem.Notifications.csproj", "{C8E69F29-CD02-48EC-8E1B-581A55864290}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingSystem.Contract", "EventTicketingSystem.Contract\EventTicketingSystem.Contract.csproj", "{3E633D26-502B-4FAD-A0E2-3F7B9EF7C194}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +50,14 @@ Global
 		{DF992BEE-B084-43F0-960A-C719FAFF9C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF992BEE-B084-43F0-960A-C719FAFF9C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF992BEE-B084-43F0-960A-C719FAFF9C4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8E69F29-CD02-48EC-8E1B-581A55864290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8E69F29-CD02-48EC-8E1B-581A55864290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8E69F29-CD02-48EC-8E1B-581A55864290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8E69F29-CD02-48EC-8E1B-581A55864290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E633D26-502B-4FAD-A0E2-3F7B9EF7C194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E633D26-502B-4FAD-A0E2-3F7B9EF7C194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E633D26-502B-4FAD-A0E2-3F7B9EF7C194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E633D26-502B-4FAD-A0E2-3F7B9EF7C194}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

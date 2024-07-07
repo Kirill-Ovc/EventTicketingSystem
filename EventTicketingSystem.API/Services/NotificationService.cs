@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using EventTicketingSystem.API.Interfaces;
-using EventTicketingSystem.API.Messaging;
+using EventTicketingSystem.Contract.Models;
 using EventTicketingSystem.DataAccess.Interfaces;
 
 namespace EventTicketingSystem.API.Services
