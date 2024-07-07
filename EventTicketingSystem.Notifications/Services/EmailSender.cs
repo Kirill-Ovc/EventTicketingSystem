@@ -1,10 +1,13 @@
-﻿using EventTicketingSystem.Notifications.Interfaces;
+﻿using EventTicketingSystem.Notifications.Exceptions;
+using EventTicketingSystem.Notifications.Interfaces;
 using EventTicketingSystem.Notifications.Models;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using Polly;
+using Polly.Retry;
 
 namespace EventTicketingSystem.Notifications.Services
 {
@@ -12,6 +15,8 @@ namespace EventTicketingSystem.Notifications.Services
     {
         private readonly ILogger<EmailSender> _logger;
         private readonly EmailSettings _emailSettings;
+        private const int RetryCount = 3;
+        private const int RetryDelay = 4;
 
         public EmailSender(ILogger<EmailSender> logger,
             IOptions<EmailSettings> options)
@@ -22,6 +27,24 @@ namespace EventTicketingSystem.Notifications.Services
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
+            var policy = CreateRetryPolicy();
+            await policy.ExecuteAsync(async () => await SendEmailInternal(email, subject, htmlMessage));
+        }
+
+        private AsyncRetryPolicy CreateRetryPolicy()
+        {
+            return Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(RetryDelay, retryAttempt)),
+                    (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning("Retry {RetryCount} encountered an error: {ExceptionMessage}. Waiting {TimeSpan} before next retry.",
+                            retryCount, exception.Message, timeSpan);
+                    });
+        }
+
+        private async Task SendEmailInternal(string email, string subject, string htmlMessage)
+        {
             var client = CreateMailJetClient();
             var request = CreateRequest(email, subject, htmlMessage);
             MailjetResponse response = await client.PostAsync(request);
@@ -31,11 +54,13 @@ namespace EventTicketingSystem.Notifications.Services
             }
             else
             {
-                var errorMessage = $"StatusCode: {response.StatusCode} \n" + 
+                var errorMessage = $"Failed to send email. StatusCode: {response.StatusCode} \n" + 
                               $"ErrorInfo: {response.GetErrorInfo()} \n" +
                               $"ErrorMessage: {response.GetErrorMessage()} \n" +
                               $"ResponseData: {response.GetData()}";
                 _logger.LogError(errorMessage);
+
+                throw new SendMailException(errorMessage);
             }
         }
 
