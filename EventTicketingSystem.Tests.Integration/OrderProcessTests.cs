@@ -99,6 +99,8 @@ namespace EventTicketingSystem.Tests.Integration
             var cart = await AddToCart();
             var paymentId = await BookCart(cart.CartId);
             await CompletePayment(paymentId);
+
+            // Assert manually - 2 notifications in the message queue
         }
 
         private async Task<Cart> AddToCart()

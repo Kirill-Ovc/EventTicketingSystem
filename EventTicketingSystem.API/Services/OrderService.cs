@@ -17,6 +17,7 @@ namespace EventTicketingSystem.API.Services
         private readonly IBookingCartMapper _bookingCartMapper;
         private readonly IBookingSeatService _bookingSeatService;
         private readonly IPaymentRepository _paymentRepository;
+        private readonly INotificationService _notificationService;
         private readonly IMemoryCache _cache;
         private static readonly int _expirationTimeInMinutes = 10;
         private static readonly ConcurrentDictionary<string, SemaphoreSlim> _cartSemaphores = new();
@@ -27,6 +28,7 @@ namespace EventTicketingSystem.API.Services
             IBookingCartMapper bookingCartMapper,
             IBookingSeatService bookingSeatService,
             IPaymentRepository paymentRepository,
+            INotificationService notificationService,
             IMemoryCache cache)
         {
             _logger = logger;
@@ -34,6 +36,7 @@ namespace EventTicketingSystem.API.Services
             _bookingCartMapper = bookingCartMapper;
             _bookingSeatService = bookingSeatService;
             _paymentRepository = paymentRepository;
+            _notificationService = notificationService;
             _cache = cache;
         }
 
@@ -145,6 +148,8 @@ namespace EventTicketingSystem.API.Services
             };
             await _paymentRepository.Add(newPayment);
             await _paymentRepository.SaveChanges();
+
+            await _notificationService.NotifyCheckoutStartedAsync(booking.Id);
 
             return newPayment.Id;
         }

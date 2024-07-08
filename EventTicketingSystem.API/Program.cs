@@ -22,6 +22,7 @@ builder.Services.AddBusinessServices();
 builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddMemoryCache();
+builder.AddMessaging();
 
 var app = builder.Build();
 

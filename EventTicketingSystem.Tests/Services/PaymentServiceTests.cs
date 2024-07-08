@@ -1,4 +1,5 @@
-﻿using EventTicketingSystem.API.Services;
+﻿using EventTicketingSystem.API.Interfaces;
+using EventTicketingSystem.API.Services;
 using EventTicketingSystem.DataAccess.Interfaces;
 using EventTicketingSystem.DataAccess.Models.Entities;
 using EventTicketingSystem.DataAccess.Models.Enums;
@@ -14,6 +15,7 @@ namespace EventTicketingSystem.Tests.Services
         private IPaymentRepository _paymentRepository;
         private IBookingRepository _bookingRepository;
         private IBookingSeatRepository _bookingSeatRepository;
+        private INotificationService _notificationService;
         private Payment _foundPayment;
         private Booking _foundBooking;
 
@@ -23,7 +25,8 @@ namespace EventTicketingSystem.Tests.Services
             _paymentRepository = Substitute.For<IPaymentRepository>();
             _bookingRepository = Substitute.For<IBookingRepository>();
             _bookingSeatRepository = Substitute.For<IBookingSeatRepository>();
-            _paymentService = new PaymentService(_paymentRepository, _bookingRepository, _bookingSeatRepository);
+            _notificationService = Substitute.For<INotificationService>();
+            _paymentService = new PaymentService(_paymentRepository, _bookingRepository, _bookingSeatRepository, _notificationService);
             _foundPayment = new Payment
             {
                 Id = 1,

@@ -20,6 +20,7 @@ namespace EventTicketingSystem.Tests.Services
         private IBookingCartMapper _bookingCartMapper;
         private IBookingSeatService _bookingSeatService;
         private IPaymentRepository _paymentRepository;
+        private INotificationService _notificationService;
 
         [SetUp]
         public void Setup()
@@ -29,10 +30,13 @@ namespace EventTicketingSystem.Tests.Services
             _bookingCartMapper = Substitute.For<IBookingCartMapper>();
             _bookingSeatService = Substitute.For<IBookingSeatService>();
             _paymentRepository = Substitute.For<IPaymentRepository>();
+            _notificationService = Substitute.For<INotificationService>();
             var memoryCache = Substitute.For<IMemoryCache>();
 
             _service = new OrderService(logger, 
-                _bookingRepository, _bookingCartMapper, _bookingSeatService, _paymentRepository, memoryCache);
+                _bookingRepository, _bookingCartMapper, 
+                _bookingSeatService, _paymentRepository,
+                _notificationService, memoryCache);
         }
 
         [Test]
