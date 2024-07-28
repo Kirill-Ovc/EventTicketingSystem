@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
+		Api.Dockerfile = Api.Dockerfile
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -22,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventTicketingSystem.Tests.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventTicketingSystem.Notifications", "EventTicketingSystem.Notifications\EventTicketingSystem.Notifications.csproj", "{C8E69F29-CD02-48EC-8E1B-581A55864290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingSystem.Contract", "EventTicketingSystem.Contract\EventTicketingSystem.Contract.csproj", "{3E633D26-502B-4FAD-A0E2-3F7B9EF7C194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventTicketingSystem.Contract", "EventTicketingSystem.Contract\EventTicketingSystem.Contract.csproj", "{3E633D26-502B-4FAD-A0E2-3F7B9EF7C194}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

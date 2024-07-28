@@ -23,6 +23,7 @@ builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddMemoryCache();
 builder.AddMessaging();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -42,5 +43,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();
