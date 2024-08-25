@@ -57,7 +57,17 @@ namespace EventTicketingSystem.DataAccess.Extensions
 
             services.Configure<DatabaseSettings>(configuration.GetSection(DatabaseSettings.SectionName));
 
-            services.AddDbContext<DatabaseContext>(options => options.UseSqlite(databaseSettings.ConnectionString));
+            services.AddDbContext<DatabaseContext>(options =>
+            {
+                if (IsDevelopment())
+                {
+                    options.UseSqlite(databaseSettings.ConnectionString);
+                }
+                else
+                {
+                    options.UseSqlServer(databaseSettings.ConnectionString);
+                }
+            });
         }
 
         private static void RegisterRepositories(this IServiceCollection services)
@@ -73,6 +83,11 @@ namespace EventTicketingSystem.DataAccess.Extensions
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<IOfferRepository, OfferRepository>();
             services.AddScoped<IBookingSeatRepository, BookingSeatRepository>();
+        }
+
+        private static bool IsDevelopment()
+        {
+            return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
         }
     }
 }

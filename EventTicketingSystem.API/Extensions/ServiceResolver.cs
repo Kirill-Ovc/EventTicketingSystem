@@ -25,9 +25,10 @@ namespace EventTicketingSystem.API.Extensions
 
         public static void AddMessaging(this WebApplicationBuilder builder)
         {
-            var endpointName = nameof(EventTicketingSystem);
+            var endpointName = "EventTicketingSystem_Notifications";
             var endpointConfiguration = new EndpointConfiguration(endpointName);
             endpointConfiguration.UseSerialization<SystemJsonSerializer>();
+            // Comment SendOnly to create exchanges and queues automatically with the first run
             endpointConfiguration.SendOnly();
             endpointConfiguration.EnableInstallers();
 

@@ -51,7 +51,6 @@ namespace EventTicketingSystem.DataAccess.Helpers
             {
                 new()
                 {
-                    Id = 1,
                     Username = "admin",
                     Name = "Admin",
                     Password = "password",
@@ -59,7 +58,6 @@ namespace EventTicketingSystem.DataAccess.Helpers
                 },
                 new()
                 {
-                    Id = 2,
                     Username = "TestUser",
                     Name = "Test User",
                     Password = "password",
@@ -67,7 +65,6 @@ namespace EventTicketingSystem.DataAccess.Helpers
                 },
                 new()
                 {
-                    Id = 3,
                     Username = "Kirill1",
                     Name = "Kirill O",
                     Password = "password",
