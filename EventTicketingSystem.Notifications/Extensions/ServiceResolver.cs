@@ -16,7 +16,7 @@ namespace EventTicketingSystem.Notifications.Extensions
 
         public static void AddMessaging(this IHostBuilder builder, IConfiguration configuration)
         {
-            var endpointName = nameof(EventTicketingSystem);
+            var endpointName = "EventTicketingSystem_Notifications";
             var endpointConfiguration = new EndpointConfiguration(endpointName);
             endpointConfiguration.UseSerialization<SystemJsonSerializer>();
             endpointConfiguration.EnableInstallers();

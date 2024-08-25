@@ -2,6 +2,8 @@ using EventTicketingSystem.API.Extensions;
 using EventTicketingSystem.API.Helpers;
 using EventTicketingSystem.API.Swagger;
 using EventTicketingSystem.DataAccess.Extensions;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -23,6 +25,7 @@ builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddMemoryCache();
 builder.AddMessaging();
+builder.Services.ConfigureHealthChecks(builder.Configuration);
 
 var app = builder.Build();
 
@@ -30,7 +33,7 @@ var app = builder.Build();
 app.Services.InitializeDatabase();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -42,5 +45,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();

@@ -30,10 +30,10 @@ namespace EventTicketingSystem.API.Services
         {
             var sendNotification = new SendNotification
             {
-                OperationName = "Test",
+                OperationName = "Test operation " + operationName,
                 CustomerName = "CustomerName",
                 CustomerEmail = "CustomerEmail",
-                OrderAmount = "OrderAmount",
+                OrderAmount = "10000",
                 OrderSummary = new List<string>()
             };
 
