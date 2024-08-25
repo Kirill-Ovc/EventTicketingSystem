@@ -1,7 +1,9 @@
-﻿using EventTicketingSystem.API.Interfaces;
+﻿using EventTicketingSystem.API.Helpers;
+using EventTicketingSystem.API.Interfaces;
 using EventTicketingSystem.API.Models;
 using EventTicketingSystem.API.Services;
 using EventTicketingSystem.Contract.Models;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace EventTicketingSystem.API.Extensions
 {
@@ -42,6 +44,21 @@ namespace EventTicketingSystem.API.Extensions
             transport.ConnectionString(connectionString);
 
             builder.Host.UseNServiceBus(_ => endpointConfiguration);
+        }
+
+        public static void ConfigureHealthChecks(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHealthChecks()
+                .AddCheck<VersionHealthCheck>("apiVersion", failureStatus: HealthStatus.Unhealthy)
+                .AddSqlServer(
+                    connectionString: configuration.GetValue<string>("DatabaseSettings:ConnectionString"),
+                    name: "sqlserver",
+                    healthQuery: "SELECT 1;", // Optional: A custom SQL query to check database health
+                    failureStatus: HealthStatus.Unhealthy)
+                .AddRabbitMQ(
+                    rabbitConnectionString: configuration.GetValue<string>("MessagingSettings:ConnectionString"),
+                    name: "rabbitmq",
+                    failureStatus: HealthStatus.Unhealthy);
         }
     }
 }
